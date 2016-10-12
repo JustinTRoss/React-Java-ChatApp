@@ -1,0 +1,92 @@
+{
+    "messages": [
+        {
+            "id": 1,
+            "author": "Jane",
+            "timestamp": 1421953410956,
+            "content": "Hello!"
+        },
+        {
+            "id": 2,
+            "author": "Sam",
+            "timestamp": 1421953434028,
+            "content": "How are you?",
+            "last_edited": 1421953454124
+        },
+        {
+            "id": 3,
+            "author": "Jane",
+            "timestamp": 1421953433276,
+            "content": "I'm in SAT!"
+        },
+        {
+            "id": 4,
+            "author": "Jane",
+            "timestamp": 1421953454129,
+            "content": "Flight is delayed. :P San Antonio TSA was the friendliest I've ever encountered, though. And I have a hamburger, a beer, and decent wifi."
+        },
+        {
+            "id": 5,
+            "author": "Sam",
+            "timestamp": 1421953475813,
+            "content": "Not bad."
+        },
+        {
+            "id": 6,
+            "author": "alex",
+            "timestamp": 1421953485810,
+            "content": "do you still need a ride from the airport?"
+        },
+        {
+            "id": 7,
+            "author": "Jane",
+            "timestamp": 1421953502796,
+            "content": "@Alex: Yeah, likely will get my bags after BART stops running. They're saying the ETA is 11:40pm now. Is that too late for you?",
+            "last_edited": 1421953556411
+        },
+        {
+            "id": 8,
+            "author": "Sam",
+            "timestamp": 1421953569386,
+            "content": "Liana says hi!"
+        },
+        {
+            "id": 9,
+            "author": "alex",
+            "timestamp": 1421953569386,
+            "content": "that's fine"
+        },
+        {
+            "id": 10,
+            "author": "Carly",
+            "timestamp": 1421953591994,
+            "content": "https://medium.com/the-nib/the-truth-about-the-internet-fb8864c92185 oh dear"
+        },
+        {
+            "id": 11,
+            "author": "alex",
+            "timestamp": 1421953601859,
+            "content": "i'm on like aleutian time these days :P",
+            "last_edited": "1421953605859"
+        },
+        {
+            "id": 12,
+            "author": "Jane",
+            "timestamp": 1421953638978,
+            "content": "Hi Lili! How did your art show go? :D"
+        },
+        {
+            "id": 13,
+            "author": "Carly",
+            "timestamp": 1421953496000,
+            "content": "Wheeeeee."
+        },
+        {
+            "id": 14,
+            "author": "Sam",
+            "timestamp": 1421953733618,
+            "content": "@Carly: Pretty much."
+        }
+    ],
+    "last_seen": 1421953648024
+}

@@ -1,0 +1,49 @@
+{
+  "name": "tinychat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --compilers js:babel-register --recursive",
+    "test:watch": "npm test -- --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^15.3.0",
+    "react-bootstrap": "^0.30.2",
+    "react-dom": "^15.3.0",
+    "react-redux": "^4.4.5",
+    "react-tap-event-plugin": "^1.0.0",
+    "redux": "^3.5.2",
+    "redux-logger": "^2.6.1",
+    "redux-thunk": "^2.1.0",
+    "chai": "^3.5.0",
+    "mocha": "^3.0.2"
+  },
+  "devDependencies": {
+    "redux-mock-store": "^1.1.2",
+    "webpack": "^1.13.1",
+    "babel-core": "^6.13.2",
+    "babel-eslint": "^6.1.2",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-react": "^6.11.1",
+    "babel-preset-react-hmre": "^1.1.1",
+    "chai-as-promised": "^5.3.0",
+    "eslint": "3.2.2",
+    "eslint-config-airbnb": "10.0.0",
+    "eslint-loader": "1.5.0",
+    "eslint-plugin-import": "1.12.0",
+    "eslint-plugin-jsx-a11y": "^2.0.1",
+    "eslint-plugin-react": "6.0.0",
+    "nock": "^8.0.0",
+    "node-mocks-http": "^1.5.3",
+    "babel-register": "^6.11.6",
+    "css-loader": "^0.23.1",
+    "eslint": "^3.2.2",
+    "mock-local-storage": "^1.0.2",
+    "style-loader": "^0.13.1"
+  }
+}

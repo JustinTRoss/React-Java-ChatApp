@@ -1,1 +1,36 @@
 (here is where your spec/explanation to the tinychat backend developer goes)
+
+Routes:
+
+Endpoints:
+	- /api/v1/messages
+		- GET:
+			Parameters:
+				Required: none
+				Optional: none 
+			Success payload:
+				response.body = {
+					messages: {
+						author: string 
+						content: string
+						id: int 
+						timestamp: date (milliseconds)
+						last_edited: date (milliseconds)
+					}
+					last_seen: date (milliseconds)
+				}
+			Error payload:
+				response.body = 'Error retrieving messages'
+
+		- POST:
+			Parameters:
+				Required:
+					Author: string
+					Content: string
+				Optional: none
+			Success payload:
+				response.body = 'Message Sent'
+			Error payload:
+				response.body = 'Error sending message'
+
+

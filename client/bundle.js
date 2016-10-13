@@ -21476,12 +21476,33 @@
 	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
 	
 	    _this.state = {
-	      test: 'test'
+	      messageInputValue: ''
 	    };
+	
+	    _this.changeMessageInputValue = _this.changeMessageInputValue.bind(_this);
+	    _this.handleMessageInputKeyUp = _this.handleMessageInputKeyUp.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(App, [{
+	    key: 'changeMessageInputValue',
+	    value: function changeMessageInputValue(event) {
+	      this.setState({
+	        messageInputValue: event.target.value
+	      });
+	    }
+	  }, {
+	    key: 'handleMessageInputKeyUp',
+	    value: function handleMessageInputKeyUp(event) {
+	      if (event.keyCode == '13') {
+	        console.log(event.keyCode);
+	        var message = event.target.value;
+	        this.setState({
+	          messageInputValue: ''
+	        });
+	      }
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
@@ -21490,7 +21511,11 @@
 	        _react2.default.createElement(_Header2.default, null),
 	        _react2.default.createElement(_Sidebar2.default, null),
 	        _react2.default.createElement(_MessageList2.default, null),
-	        _react2.default.createElement(_Footer2.default, null)
+	        _react2.default.createElement(_Footer2.default, {
+	          messageInputValue: this.state.messageInputValue,
+	          changeMessageInputValue: this.changeMessageInputValue,
+	          handleMessageInputKeyUp: this.handleMessageInputKeyUp
+	        })
 	      );
 	    }
 	  }]);
@@ -21546,12 +21571,20 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var Footer = function Footer() {
+	var Footer = function Footer(_ref) {
+	  var messageInputValue = _ref.messageInputValue;
+	  var changeMessageInputValue = _ref.changeMessageInputValue;
+	  var handleMessageInputKeyUp = _ref.handleMessageInputKeyUp;
+	
 	  return _react2.default.createElement(
 	    'div',
 	    null,
 	    'Footer',
-	    _react2.default.createElement(_MessageInput2.default, null)
+	    _react2.default.createElement(_MessageInput2.default, {
+	      messageInputValue: messageInputValue,
+	      changeMessageInputValue: changeMessageInputValue,
+	      handleMessageInputKeyUp: handleMessageInputKeyUp
+	    })
 	  );
 	};
 	
@@ -21630,11 +21663,20 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var MessageInput = function MessageInput() {
+	var MessageInput = function MessageInput(_ref) {
+	  var messageInputValue = _ref.messageInputValue;
+	  var changeMessageInputValue = _ref.changeMessageInputValue;
+	  var handleMessageInputKeyUp = _ref.handleMessageInputKeyUp;
+	
+	
 	  return _react2.default.createElement(
 	    'div',
 	    null,
-	    'MessageInput'
+	    _react2.default.createElement('input', {
+	      value: messageInputValue,
+	      onChange: changeMessageInputValue,
+	      onKeyUp: handleMessageInputKeyUp
+	    })
 	  );
 	};
 	

@@ -1,9 +1,14 @@
 import React from 'react';
 
-const MessageInput = () => {
+const MessageInput = ({ messageInputValue, changeMessageInputValue, handleMessageInputKeyUp }) => {
+
   return (
     <div>
-      MessageInput
+      <input
+        value = { messageInputValue }
+        onChange = { changeMessageInputValue }
+        onKeyUp = { handleMessageInputKeyUp }
+      />
     </div>
   );
 };

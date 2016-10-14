@@ -21476,16 +21476,45 @@
 	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
 	
 	    _this.state = {
-	      messageInputValue: ''
+	      messageInputValue: '',
+	      messageArray: []
 	    };
 	
 	    _this.changeMessageInputValue = _this.changeMessageInputValue.bind(_this);
 	    _this.handleMessageInputKeyUp = _this.handleMessageInputKeyUp.bind(_this);
-	    _this.postMessage = _this.postMessage.bind(_this);
+	    _this.postMessageToServer = _this.postMessageToServer.bind(_this);
+	    _this.addMessageToMessageStack = _this.addMessageToMessageStack.bind(_this);
+	    _this.getAllMessages = _this.getAllMessages.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(App, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.getAllMessages();
+	    }
+	  }, {
+	    key: 'getAllMessages',
+	    value: function getAllMessages() {
+	      var _this2 = this;
+	
+	      var messageUrl = '/fixtures/fakedata.json';
+	      fetch(messageUrl).then(function (res) {
+	        return res.json();
+	      }).then(function (responseObj) {
+	        return responseObj.messages;
+	      }).then(function (messageArray) {
+	        console.log(messageArray);
+	        console.log(_this2.state);
+	        _this2.setState({
+	          messageArray: messageArray
+	        });
+	        console.log(_this2.state);
+	      }).catch(function (err) {
+	        return console.error('Error fetching messages: ', err);
+	      });
+	    }
+	  }, {
 	    key: 'changeMessageInputValue',
 	    value: function changeMessageInputValue(event) {
 	      this.setState({
@@ -21495,21 +21524,21 @@
 	  }, {
 	    key: 'handleMessageInputKeyUp',
 	    value: function handleMessageInputKeyUp(event) {
+	      // if Enter key pressed
 	      if (event.keyCode == '13') {
 	        this.postMessage('test');
+	
 	        this.setState({
 	          messageInputValue: ''
 	        });
 	      }
 	    }
 	  }, {
-	    key: 'postMessage',
-	    value: function postMessage(message) {
-	      console.log(window.location.pathname);
-	      $.post('/fixtures/fakedata.json', 'test', function (response) {
-	        console.log(response);
-	      }, 'json');
-	    }
+	    key: 'postMessageToServer',
+	    value: function postMessageToServer(message) {}
+	  }, {
+	    key: 'addMessageToMessageStack',
+	    value: function addMessageToMessageStack(message) {}
 	  }, {
 	    key: 'render',
 	    value: function render() {
@@ -21518,7 +21547,9 @@
 	        null,
 	        _react2.default.createElement(_Header2.default, null),
 	        _react2.default.createElement(_Sidebar2.default, null),
-	        _react2.default.createElement(_MessageList2.default, null),
+	        _react2.default.createElement(_MessageList2.default, {
+	          messageArray: this.state.messageArray
+	        }),
 	        _react2.default.createElement(_Footer2.default, {
 	          messageInputValue: this.state.messageInputValue,
 	          changeMessageInputValue: this.changeMessageInputValue,

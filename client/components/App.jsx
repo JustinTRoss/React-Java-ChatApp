@@ -9,11 +9,33 @@ class App extends React.Component {
     super();
     this.state = {
       messageInputValue: '',
+      messageArray: [],
     };
 
     this.changeMessageInputValue = this.changeMessageInputValue.bind(this);
     this.handleMessageInputKeyUp = this.handleMessageInputKeyUp.bind(this);
-    this.postMessage = this.postMessage.bind(this);
+    this.postMessageToServer = this.postMessageToServer.bind(this);
+    this.addMessageToMessageStack = this.addMessageToMessageStack.bind(this);
+    this.getAllMessages = this.getAllMessages.bind(this);
+  }
+
+  componentWillMount() {
+    this.getAllMessages();
+  }
+
+  getAllMessages() {
+    const messageUrl = '/fixtures/fakedata.json';
+    fetch(messageUrl)
+      .then(res => res.json())
+      .then(responseObj => responseObj.messages)
+      .then(messageArray => {
+        console.log(messageArray);
+        console.log(this.state);
+        this.setState({
+          messageArray: messageArray,
+        });
+        console.log(this.state);
+      }).catch(err => console.error('Error fetching messages: ', err));
   }
 
   changeMessageInputValue(event) {
@@ -23,19 +45,22 @@ class App extends React.Component {
   }
 
   handleMessageInputKeyUp(event) {
+    // if Enter key pressed
     if (event.keyCode == '13') {
       this.postMessage('test');
+
       this.setState({
         messageInputValue: '',
       });
     }
-  };
+  }
 
-  postMessage(message) {
-    console.log(window.location.pathname);
-    $.post('/fixtures/fakedata.json', 'test', (response) => {
-      console.log(response);
-    }, 'json');
+  postMessageToServer(message) {
+    
+  }
+
+  addMessageToMessageStack(message) {
+
   }
 
   render() {
@@ -43,7 +68,9 @@ class App extends React.Component {
       <div>
         <Header />
         <Sidebar />
-        <MessageList />
+        <MessageList 
+          messageArray = { this.state.messageArray }
+        />
         <Footer
           messageInputValue = { this.state.messageInputValue }
           changeMessageInputValue = { this.changeMessageInputValue }

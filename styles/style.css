@@ -1,0 +1,56 @@
+/* Stub CSS file for your tinychat app! */
+
+body {
+  background-color: snow;
+  color: #333;
+}
+
+#header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  min-width: 100%;
+  min-height: 64px;
+  display: block;
+}
+
+#footer {
+  position: fixed;
+  padding-left: 16px;
+  padding-right: 16px;
+  left: 220px;
+  right: 0;
+  bottom: 0;
+  min-height: 64px;
+  display: flex;
+}
+
+#message-input {
+  min-width: 100%;
+  min-height: 42px;
+  max-height: 42px;
+  border-radius: 6px;
+}
+
+#sidebar {
+  position: fixed;
+  left: 0;
+  top: 64px;
+  min-width: 220px;
+  min-height: 100%;
+  display: block;
+  background-color: #4d394b;
+}
+
+
+#message-list {
+  position: fixed;
+  display: block;
+  left: 220px;
+  top: 64px;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.message-list-entry {
+}

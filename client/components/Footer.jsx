@@ -3,8 +3,7 @@ import MessageInput from './MessageInput';
 
 const Footer = ({ messageInputValue, changeMessageInputValue, handleMessageInputKeyUp }) => {
   return (
-    <div>
-      Footer
+    <div id="footer">
       <MessageInput
         messageInputValue = { messageInputValue }
         changeMessageInputValue = { changeMessageInputValue }

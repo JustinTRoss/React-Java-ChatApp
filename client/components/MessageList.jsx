@@ -3,7 +3,7 @@ import MessageListEntry from './MessageListEntry';
 
 const MessageList = () => {
   return (
-    <div>
+    <div id="message-list">
       MessageList
       <MessageListEntry />
     </div>

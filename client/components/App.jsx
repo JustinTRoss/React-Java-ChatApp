@@ -13,6 +13,7 @@ class App extends React.Component {
 
     this.changeMessageInputValue = this.changeMessageInputValue.bind(this);
     this.handleMessageInputKeyUp = this.handleMessageInputKeyUp.bind(this);
+    this.postMessage = this.postMessage.bind(this);
   }
 
   changeMessageInputValue(event) {
@@ -23,13 +24,19 @@ class App extends React.Component {
 
   handleMessageInputKeyUp(event) {
     if (event.keyCode == '13') {
-      console.log(event.keyCode);
-      const message = event.target.value;
+      this.postMessage('test');
       this.setState({
         messageInputValue: '',
       });
     }
   };
+
+  postMessage(message) {
+    console.log(window.location.pathname);
+    $.post('/fixtures/fakedata.json', 'test', (response) => {
+      console.log(response);
+    }, 'json');
+  }
 
   render() {
     return (

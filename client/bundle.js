@@ -21481,6 +21481,7 @@
 	
 	    _this.changeMessageInputValue = _this.changeMessageInputValue.bind(_this);
 	    _this.handleMessageInputKeyUp = _this.handleMessageInputKeyUp.bind(_this);
+	    _this.postMessage = _this.postMessage.bind(_this);
 	    return _this;
 	  }
 	
@@ -21495,12 +21496,19 @@
 	    key: 'handleMessageInputKeyUp',
 	    value: function handleMessageInputKeyUp(event) {
 	      if (event.keyCode == '13') {
-	        console.log(event.keyCode);
-	        var message = event.target.value;
+	        this.postMessage('test');
 	        this.setState({
 	          messageInputValue: ''
 	        });
 	      }
+	    }
+	  }, {
+	    key: 'postMessage',
+	    value: function postMessage(message) {
+	      console.log(window.location.pathname);
+	      $.post('/fixtures/fakedata.json', 'test', function (response) {
+	        console.log(response);
+	      }, 'json');
 	    }
 	  }, {
 	    key: 'render',
@@ -21529,7 +21537,7 @@
 /* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -21543,9 +21551,16 @@
 	
 	var Header = function Header() {
 	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    'Header'
+	    "div",
+	    { id: "header" },
+	    _react2.default.createElement(
+	      "h1",
+	      null,
+	      "tinychat",
+	      _react2.default.createElement("span", { className: "glyphicon glyphicon-bullhorn" }),
+	      _react2.default.createElement("span", { className: "glyphicon glyphicon-globe" }),
+	      _react2.default.createElement("span", { className: "glyphicon glyphicon-heart" })
+	    )
 	  );
 	};
 	
@@ -21578,8 +21593,7 @@
 	
 	  return _react2.default.createElement(
 	    'div',
-	    null,
-	    'Footer',
+	    { id: 'footer' },
 	    _react2.default.createElement(_MessageInput2.default, {
 	      messageInputValue: messageInputValue,
 	      changeMessageInputValue: changeMessageInputValue,
@@ -21594,7 +21608,7 @@
 /* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -21608,9 +21622,9 @@
 	
 	var Sidebar = function Sidebar() {
 	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    'Sidebar'
+	    "div",
+	    { id: "sidebar" },
+	    "Sidebar"
 	  );
 	};
 	
@@ -21639,7 +21653,7 @@
 	var MessageList = function MessageList() {
 	  return _react2.default.createElement(
 	    'div',
-	    null,
+	    { id: 'message-list' },
 	    'MessageList',
 	    _react2.default.createElement(_MessageListEntry2.default, null)
 	  );
@@ -21651,7 +21665,7 @@
 /* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -21669,15 +21683,12 @@
 	  var handleMessageInputKeyUp = _ref.handleMessageInputKeyUp;
 	
 	
-	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    _react2.default.createElement('input', {
-	      value: messageInputValue,
-	      onChange: changeMessageInputValue,
-	      onKeyUp: handleMessageInputKeyUp
-	    })
-	  );
+	  return _react2.default.createElement("input", {
+	    id: "message-input",
+	    value: messageInputValue,
+	    onChange: changeMessageInputValue,
+	    onKeyUp: handleMessageInputKeyUp
+	  });
 	};
 	
 	exports.default = MessageInput;
@@ -21686,7 +21697,7 @@
 /* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -21700,9 +21711,9 @@
 	
 	var MessageListEntry = function MessageListEntry() {
 	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    'MessageListEntry MessageListEntry MessageListEntry'
+	    "div",
+	    { className: "message-list-entry" },
+	    "MessageListEntry"
 	  );
 	};
 	

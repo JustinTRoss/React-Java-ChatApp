@@ -2,9 +2,7 @@ import React from 'react';
 
 const MessageListEntry = () => {
   return (
-    <div>
-      MessageListEntry
-      MessageListEntry
+    <div className="message-list-entry">
       MessageListEntry
     </div>
   );

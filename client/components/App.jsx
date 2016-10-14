@@ -55,9 +55,10 @@ class App extends React.Component {
   }
 
   handleMessageInputKeyUp(event) {
-    // if Enter key pressed
+    // if Enter key is pressed
     if (event.keyCode == '13') {
-      this.postMessage('test');
+      this.addMessageToMessageStack('test');
+      this.postMessageToServer('test');
 
       this.setState({
         messageInputValue: '',
@@ -79,15 +80,11 @@ class App extends React.Component {
         <Header />
         <div id="main-content">
           <Sidebar />
-          <div id="message-list">
-            <div
-              id="message-list-content"
-              ref="messageList"
-            >
-              <MessageList 
-                messageArray = { this.state.messageArray }
-              />
-            </div>
+          <div 
+            id="message-list-container"
+            ref="messageList"
+          >
+              <MessageList messageArray = { this.state.messageArray }/>
           </div>
         <Footer
           messageInputValue = { this.state.messageInputValue }

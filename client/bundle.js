@@ -21535,9 +21535,10 @@
 	  }, {
 	    key: 'handleMessageInputKeyUp',
 	    value: function handleMessageInputKeyUp(event) {
-	      // if Enter key pressed
+	      // if Enter key is pressed
 	      if (event.keyCode == '13') {
-	        this.postMessage('test');
+	        this.addMessageToMessageStack('test');
+	        this.postMessageToServer('test');
 	
 	        this.setState({
 	          messageInputValue: ''
@@ -21563,17 +21564,11 @@
 	          _react2.default.createElement(_Sidebar2.default, null),
 	          _react2.default.createElement(
 	            'div',
-	            { id: 'message-list' },
-	            _react2.default.createElement(
-	              'div',
-	              {
-	                id: 'message-list-content',
-	                ref: 'messageList'
-	              },
-	              _react2.default.createElement(_MessageList2.default, {
-	                messageArray: this.state.messageArray
-	              })
-	            )
+	            {
+	              id: 'message-list-container',
+	              ref: 'messageList'
+	            },
+	            _react2.default.createElement(_MessageList2.default, { messageArray: this.state.messageArray })
 	          ),
 	          _react2.default.createElement(_Footer2.default, {
 	            messageInputValue: this.state.messageInputValue,
@@ -21608,7 +21603,7 @@
 	
 	var Header = function Header() {
 	  return _react2.default.createElement(
-	    "div",
+	    "header",
 	    { id: "header" },
 	    _react2.default.createElement(
 	      "h1",
@@ -21649,7 +21644,7 @@
 	  var handleMessageInputKeyUp = _ref.handleMessageInputKeyUp;
 	
 	  return _react2.default.createElement(
-	    'div',
+	    'footer',
 	    { id: 'footer' },
 	    _react2.default.createElement(_MessageInput2.default, {
 	      messageInputValue: messageInputValue,
@@ -21744,10 +21739,13 @@
 	
 	  return _react2.default.createElement(
 	    'div',
-	    null,
+	    {
+	      id: 'message-list'
+	    },
 	    messageArray.map(function (message) {
 	      return _react2.default.createElement(_MessageListEntry2.default, {
-	        message: message
+	        message: message,
+	        key: message.id
 	      });
 	    })
 	  );
@@ -21787,23 +21785,17 @@
 	      _react2.default.createElement(
 	        "span",
 	        { className: "message-author" },
-	        " ",
-	        author + ":",
-	        " "
+	        author + ": "
 	      ),
 	      _react2.default.createElement(
 	        "span",
 	        { className: "message-content" },
-	        " ",
-	        "" + content,
-	        " "
+	        content
 	      ),
 	      _react2.default.createElement(
 	        "span",
-	        { className: "message-date" },
-	        " ",
-	        "" + new Date(timestamp),
-	        " "
+	        { className: "message-timestamp" },
+	        "" + new Date(timestamp)
 	      )
 	    )
 	  );

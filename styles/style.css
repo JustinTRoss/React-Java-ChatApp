@@ -12,6 +12,7 @@ body {
   min-width: 100%;
   min-height: 64px;
   display: block;
+  border-bottom: 1px solid #e8e8e8;
 }
 
 #footer {
@@ -47,7 +48,7 @@ body {
   background-color: #4d394b;
 }
 
-#message-list {
+#message-list-container {
   position: fixed;
   left: 220px;
   right: 0;
@@ -57,17 +58,21 @@ body {
   display: flex;
   justify-content: flex-start;
   align-content: flex-end;
+  overflow-y: scroll;
 }
 
-#message-list-content {
-  overflow-y: scroll;
+#message-list {
   min-width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  flex: 1 1 auto;
 }
 
 .message-list-entry {
   position: relative;
   border-bottom: 1px solid grey;
   min-height: 64px;
+  min-width: inherit;
   padding: 16px 8px 8px 8px;
 }
 
@@ -80,7 +85,7 @@ body {
   margin-bottom: 8px;
 }
 
-.message-date{
+.message-timestamp{
   position: absolute;
   right: 8px;
   bottom: 8px;

@@ -3,13 +3,16 @@ import MessageListEntry from './MessageListEntry';
 
 const MessageList = ({ messageArray }) => {
   return (
-      <div>
-        { messageArray.map(message => {
-            return <MessageListEntry
-              message = {message}
-            />
-        })}
-      </div>
+    <div
+      id="message-list"
+    >
+      { messageArray.map(message => {
+          return <MessageListEntry
+            message = {message}
+            key = {message.id}
+          />
+      })}
+    </div>
   );
 };
 

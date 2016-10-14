@@ -3,13 +3,13 @@ import MessageInput from './MessageInput';
 
 const Footer = ({ messageInputValue, changeMessageInputValue, handleMessageInputKeyUp }) => {
   return (
-    <div id="footer">
+    <footer id="footer">
       <MessageInput
         messageInputValue = { messageInputValue }
         changeMessageInputValue = { changeMessageInputValue }
         handleMessageInputKeyUp = { handleMessageInputKeyUp }
       />
-    </div>
+    </footer>
   );
 };
 

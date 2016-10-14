@@ -23,13 +23,6 @@ class App extends React.Component {
     this.getAllMessages();
   }
 
-  // componentDidMount() {
-  //   // Auto-focus message div to latest messages
-  //   const messageList = this.refs.messageList;
-  //   messageList.scrollTop = messageList.scrollHeight;
-  //   console.log(messageList.scrollTop, messageList.scrollHeight);
-  // }
-
   componentDidUpdate() {
     // Auto-focus message div to latest messages
     const messageList = this.refs.messageList;
@@ -84,23 +77,24 @@ class App extends React.Component {
     return (
       <div>
         <Header />
-        <Sidebar />
-        <div id="message-list">
-          <div
-            id="message-list-content"
-            ref="messageList"
-          >
-            <MessageList 
-              messageArray = { this.state.messageArray }
-            />
+        <div id="main-content">
+          <Sidebar />
+          <div id="message-list">
+            <div
+              id="message-list-content"
+              ref="messageList"
+            >
+              <MessageList 
+                messageArray = { this.state.messageArray }
+              />
+            </div>
           </div>
-        </div>
-
         <Footer
           messageInputValue = { this.state.messageInputValue }
           changeMessageInputValue = { this.changeMessageInputValue }
           handleMessageInputKeyUp = { this.handleMessageInputKeyUp }
         />
+        </div>
       </div>
     );
   }

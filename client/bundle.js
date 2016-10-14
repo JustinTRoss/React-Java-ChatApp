@@ -21493,14 +21493,6 @@
 	    value: function componentWillMount() {
 	      this.getAllMessages();
 	    }
-	
-	    // componentDidMount() {
-	    //   // Auto-focus message div to latest messages
-	    //   const messageList = this.refs.messageList;
-	    //   messageList.scrollTop = messageList.scrollHeight;
-	    //   console.log(messageList.scrollTop, messageList.scrollHeight);
-	    // }
-	
 	  }, {
 	    key: 'componentDidUpdate',
 	    value: function componentDidUpdate() {
@@ -21565,26 +21557,30 @@
 	        'div',
 	        null,
 	        _react2.default.createElement(_Header2.default, null),
-	        _react2.default.createElement(_Sidebar2.default, null),
 	        _react2.default.createElement(
 	          'div',
-	          { id: 'message-list' },
+	          { id: 'main-content' },
+	          _react2.default.createElement(_Sidebar2.default, null),
 	          _react2.default.createElement(
 	            'div',
-	            {
-	              id: 'message-list-content',
-	              ref: 'messageList'
-	            },
-	            _react2.default.createElement(_MessageList2.default, {
-	              messageArray: this.state.messageArray
-	            })
-	          )
-	        ),
-	        _react2.default.createElement(_Footer2.default, {
-	          messageInputValue: this.state.messageInputValue,
-	          changeMessageInputValue: this.changeMessageInputValue,
-	          handleMessageInputKeyUp: this.handleMessageInputKeyUp
-	        })
+	            { id: 'message-list' },
+	            _react2.default.createElement(
+	              'div',
+	              {
+	                id: 'message-list-content',
+	                ref: 'messageList'
+	              },
+	              _react2.default.createElement(_MessageList2.default, {
+	                messageArray: this.state.messageArray
+	              })
+	            )
+	          ),
+	          _react2.default.createElement(_Footer2.default, {
+	            messageInputValue: this.state.messageInputValue,
+	            changeMessageInputValue: this.changeMessageInputValue,
+	            handleMessageInputKeyUp: this.handleMessageInputKeyUp
+	          })
+	        )
 	      );
 	    }
 	  }]);
@@ -21785,7 +21781,31 @@
 	  return _react2.default.createElement(
 	    "div",
 	    { className: "message-list-entry" },
-	    author + ": " + content + " @ " + new Date(timestamp)
+	    _react2.default.createElement(
+	      "span",
+	      null,
+	      _react2.default.createElement(
+	        "span",
+	        { className: "message-author" },
+	        " ",
+	        author + ":",
+	        " "
+	      ),
+	      _react2.default.createElement(
+	        "span",
+	        { className: "message-content" },
+	        " ",
+	        "" + content,
+	        " "
+	      ),
+	      _react2.default.createElement(
+	        "span",
+	        { className: "message-date" },
+	        " ",
+	        "" + new Date(timestamp),
+	        " "
+	      )
+	    )
 	  );
 	};
 	

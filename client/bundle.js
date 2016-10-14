@@ -21493,6 +21493,22 @@
 	    value: function componentWillMount() {
 	      this.getAllMessages();
 	    }
+	
+	    // componentDidMount() {
+	    //   // Auto-focus message div to latest messages
+	    //   const messageList = this.refs.messageList;
+	    //   messageList.scrollTop = messageList.scrollHeight;
+	    //   console.log(messageList.scrollTop, messageList.scrollHeight);
+	    // }
+	
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate() {
+	      // Auto-focus message div to latest messages
+	      var messageList = this.refs.messageList;
+	      messageList.scrollTop = messageList.scrollHeight;
+	      console.log(messageList.scrollTop, messageList.scrollHeight);
+	    }
 	  }, {
 	    key: 'getAllMessages',
 	    value: function getAllMessages() {
@@ -21504,12 +21520,15 @@
 	      }).then(function (responseObj) {
 	        return responseObj.messages;
 	      }).then(function (messageArray) {
-	        console.log(messageArray);
-	        console.log(_this2.state);
+	
+	        // messageArray is NOT indexed by timestamp, so we must sort accordingly.
+	        messageArray = messageArray.sort(function (m1, m2) {
+	          return m1.timestamp - m2.timestamp;
+	        });
+	
 	        _this2.setState({
 	          messageArray: messageArray
 	        });
-	        console.log(_this2.state);
 	      }).catch(function (err) {
 	        return console.error('Error fetching messages: ', err);
 	      });
@@ -21547,9 +21566,20 @@
 	        null,
 	        _react2.default.createElement(_Header2.default, null),
 	        _react2.default.createElement(_Sidebar2.default, null),
-	        _react2.default.createElement(_MessageList2.default, {
-	          messageArray: this.state.messageArray
-	        }),
+	        _react2.default.createElement(
+	          'div',
+	          { id: 'message-list' },
+	          _react2.default.createElement(
+	            'div',
+	            {
+	              id: 'message-list-content',
+	              ref: 'messageList'
+	            },
+	            _react2.default.createElement(_MessageList2.default, {
+	              messageArray: this.state.messageArray
+	            })
+	          )
+	        ),
 	        _react2.default.createElement(_Footer2.default, {
 	          messageInputValue: this.state.messageInputValue,
 	          changeMessageInputValue: this.changeMessageInputValue,
@@ -21718,7 +21748,7 @@
 	
 	  return _react2.default.createElement(
 	    'div',
-	    { id: 'message-list' },
+	    null,
 	    messageArray.map(function (message) {
 	      return _react2.default.createElement(_MessageListEntry2.default, {
 	        message: message

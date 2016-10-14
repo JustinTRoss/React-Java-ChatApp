@@ -22,7 +22,6 @@ body {
   right: 0;
   bottom: 0;
   min-height: 64px;
-  display: flex;
 }
 
 #message-input {
@@ -36,8 +35,8 @@ body {
   position: fixed;
   left: 0;
   top: 64px;
+  bottom: 0;
   min-width: 220px;
-  min-height: 100%;
   display: block;
   background-color: #4d394b;
 }
@@ -45,12 +44,19 @@ body {
 
 #message-list {
   position: fixed;
-  display: block;
   left: 220px;
+  right: 0;
   top: 64px;
-  min-width: 100%;
-  min-height: 100%;
+  bottom: 64px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#message-list-content {
+  overflow-y: scroll;
 }
 
 .message-list-entry {
+  border: 2px solid grey;
+  min-height: 64px;
 }

@@ -21451,11 +21451,11 @@
 	
 	var _Footer2 = _interopRequireDefault(_Footer);
 	
-	var _Sidebar = __webpack_require__(175);
+	var _Sidebar = __webpack_require__(176);
 	
 	var _Sidebar2 = _interopRequireDefault(_Sidebar);
 	
-	var _MessageList = __webpack_require__(176);
+	var _MessageList = __webpack_require__(177);
 	
 	var _MessageList2 = _interopRequireDefault(_MessageList);
 	
@@ -21611,7 +21611,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _MessageInput = __webpack_require__(177);
+	var _MessageInput = __webpack_require__(175);
 	
 	var _MessageInput2 = _interopRequireDefault(_MessageInput);
 	
@@ -21651,6 +21651,38 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	var MessageInput = function MessageInput(_ref) {
+	  var messageInputValue = _ref.messageInputValue;
+	  var changeMessageInputValue = _ref.changeMessageInputValue;
+	  var handleMessageInputKeyUp = _ref.handleMessageInputKeyUp;
+	
+	
+	  return _react2.default.createElement("input", {
+	    id: "message-input",
+	    value: messageInputValue,
+	    onChange: changeMessageInputValue,
+	    onKeyUp: handleMessageInputKeyUp
+	  });
+	};
+	
+	exports.default = MessageInput;
+
+/***/ },
+/* 176 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
 	var Sidebar = function Sidebar() {
 	  return _react2.default.createElement(
 	    "div",
@@ -21662,7 +21694,7 @@
 	exports.default = Sidebar;
 
 /***/ },
-/* 176 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21681,48 +21713,21 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var MessageList = function MessageList() {
+	var MessageList = function MessageList(_ref) {
+	  var messageArray = _ref.messageArray;
+	
 	  return _react2.default.createElement(
 	    'div',
 	    { id: 'message-list' },
-	    'MessageList',
-	    _react2.default.createElement(_MessageListEntry2.default, null)
+	    messageArray.map(function (message) {
+	      return _react2.default.createElement(_MessageListEntry2.default, {
+	        message: message
+	      });
+	    })
 	  );
 	};
 	
 	exports.default = MessageList;
-
-/***/ },
-/* 177 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var MessageInput = function MessageInput(_ref) {
-	  var messageInputValue = _ref.messageInputValue;
-	  var changeMessageInputValue = _ref.changeMessageInputValue;
-	  var handleMessageInputKeyUp = _ref.handleMessageInputKeyUp;
-	
-	
-	  return _react2.default.createElement("input", {
-	    id: "message-input",
-	    value: messageInputValue,
-	    onChange: changeMessageInputValue,
-	    onKeyUp: handleMessageInputKeyUp
-	  });
-	};
-	
-	exports.default = MessageInput;
 
 /***/ },
 /* 178 */
@@ -21740,11 +21745,17 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var MessageListEntry = function MessageListEntry() {
+	var MessageListEntry = function MessageListEntry(_ref) {
+	  var message = _ref.message;
+	  var author = message.author;
+	  var content = message.content;
+	  var timestamp = message.timestamp;
+	
+	
 	  return _react2.default.createElement(
 	    "div",
 	    { className: "message-list-entry" },
-	    "MessageListEntry"
+	    author + ": " + content + " @ " + new Date(timestamp)
 	  );
 	};
 	

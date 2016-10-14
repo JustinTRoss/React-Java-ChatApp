@@ -1,9 +1,11 @@
 import React from 'react';
 
-const MessageListEntry = () => {
+const MessageListEntry = ({ message }) => {
+  const { author, content, timestamp } = message;
+
   return (
     <div className="message-list-entry">
-      MessageListEntry
+      {`${author}: ${content} @ ${new Date(timestamp)}`}
     </div>
   );
 };

@@ -1,13 +1,13 @@
 import React from 'react';
 import MessageInput from './MessageInput';
 
-const Footer = ({ messageInputValue, changeMessageInputValue, handleMessageInputKeyUp }) => {
+const Footer = ({ messageInputValue, changeMessageInputValue, submitMessageOnEnterKeyUp }) => {
   return (
     <footer id="footer">
       <MessageInput
         messageInputValue = { messageInputValue }
         changeMessageInputValue = { changeMessageInputValue }
-        handleMessageInputKeyUp = { handleMessageInputKeyUp }
+        submitMessageOnEnterKeyUp = { submitMessageOnEnterKeyUp }
       />
     </footer>
   );

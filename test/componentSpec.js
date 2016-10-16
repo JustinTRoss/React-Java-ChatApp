@@ -7,39 +7,42 @@ import TestUtils from 'react-addons-test-utils';
 import App from '../js/components/App';
 import Header from '../js/components/Header';
 import Sidebar from '../js/components/Sidebar';
+import UsernameInput from '../js/components/UsernameInput';
 import MessageList from '../js/components/MessageList';
 import MessageListEntry from '../js/components/MessageListEntry';
 import Footer from '../js/components/Footer';
 import MessageInput from '../js/components/MessageInput';
 
-const seedResponseJSON = {
-  "messages": [
-    {
-      "id": 1,
-      "author": "Jane",
-      "timestamp": 1421953410956,
-      "content": "Hello!"
-    },
-    {
-      "id": 2,
-      "author": "Sam",
-      "timestamp": 1421953434028,
-      "content": "How are you?",
-      "last_edited": 1421953454124
-    },
-    {
-      "id": 3,
-      "author": "Jane",
-      "timestamp": 1421953433276,
-      "content": "I'm in SAT!"
-    },
-    {
-      "id": 4,
-      "author": "Jane",
-      "timestamp": 1421953454129,
-      "content": "Flight is delayed. :P San Antonio TSA was the friendliest I've ever encountered, though. And I have a hamburger, a beer, and decent wifi."
-    }
-  ]
+const seedGetResponseJSON = {
+  "body": {
+    "messages": [
+      {
+        "id": 1,
+        "author": "Jane",
+        "timestamp": 1421953410956,
+        "content": "Hello!"
+      },
+      {
+        "id": 2,
+        "author": "Sam",
+        "timestamp": 1421953434028,
+        "content": "How are you?",
+        "last_edited": 1421953454124
+      },
+      {
+        "id": 3,
+        "author": "Jane",
+        "timestamp": 1421953433276,
+        "content": "I'm in SAT!"
+      },
+      {
+        "id": 4,
+        "author": "Jane",
+        "timestamp": 1421953454129,
+        "content": "Flight is delayed. :P San Antonio TSA was the friendliest I've ever encountered, though. And I have a hamburger, a beer, and decent wifi."
+      }
+    ]
+  }
 };
 
 describe('TinyChat Application Components:', () => {
@@ -50,7 +53,7 @@ describe('TinyChat Application Components:', () => {
         nock('http://localhost:3005')
           .persist()
           .get('/api/v1/messages')
-          .reply(200, seedResponseJSON);
+          .reply(200, seedGetResponseJSON);
         renderer.render(<App />);
       });
 
@@ -78,7 +81,10 @@ describe('TinyChat Application Components:', () => {
 
     describe('Sidebar Component:', () => {
       beforeEach(() => {
-        renderer.render(<Sidebar />);
+        renderer.render(<Sidebar
+            usernameInputValue={'usernameInputValue'}
+            changeUsernameInputValue={'changeUsernameInputValue'}
+          />);
       });
 
       it('renders a div with a proper id', () => {
@@ -86,10 +92,32 @@ describe('TinyChat Application Components:', () => {
         expect(node.type).to.deep.equal('div');
         expect(node.props.id).to.deep.equal('sidebar');
       });
+
+      it('renders a UsernameInput child', () => {
+        const node = renderer.getRenderOutput();
+        expect(node.props.children).to.deep.equal(
+          <UsernameInput
+            usernameInputValue={'usernameInputValue'}
+            changeUsernameInputValue={'changeUsernameInputValue'}
+          />
+        );
+      });
+
+      describe('UsernameInput Component:', () => {
+        beforeEach(() => {
+          renderer.render(<UsernameInput />);
+        });
+
+        it('renders an input with a proper id', () => {
+          const node = renderer.getRenderOutput();
+          expect(node.type).to.deep.equal('input');
+          expect(node.props.id).to.be.equal('username-input');
+        });
+      });
     });
 
     describe('MessageList Component:', () => {
-      const messages = seedResponseJSON.messages;
+      const messages = seedGetResponseJSON.body.messages;
       const numberOfMessages = messages.length;
 
       beforeEach(() => {
@@ -135,7 +163,7 @@ describe('TinyChat Application Components:', () => {
           <Footer
             messageInputValue={'messageInputValue'}
             changeMessageInputValue={'changeMessageInputValue'}
-            handleMessageInputKeyUp={'handleMessageInputKeyUp'}
+            submitMessageOnEnterKeyUp={'submitMessageOnEnterKeyUp'}
           />
         );
       });
@@ -152,7 +180,7 @@ describe('TinyChat Application Components:', () => {
           <MessageInput
             messageInputValue={'messageInputValue'}
             changeMessageInputValue={'changeMessageInputValue'}
-            handleMessageInputKeyUp={'handleMessageInputKeyUp'}
+            submitMessageOnEnterKeyUp={'submitMessageOnEnterKeyUp'}
           />
         );
       });

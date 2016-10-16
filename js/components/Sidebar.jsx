@@ -1,9 +1,13 @@
 import React from 'react';
+import UsernameInput from './UsernameInput';
 
-const Sidebar = () => {
+const Sidebar = ({ usernameInputValue, changeUsernameInputValue }) => {
   return (
     <div id="sidebar">
-      Sidebar
+      <UsernameInput 
+        usernameInputValue = { usernameInputValue }
+        changeUsernameInputValue = { changeUsernameInputValue }
+      />
     </div>
   );
 };

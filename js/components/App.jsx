@@ -18,11 +18,12 @@ class App extends React.Component {
     this.state = {
       messageInputValue: '',
       messageArray: [],
-      username: 'Anonymous',
+      usernameInputValue: '',
     };
 
     this.changeMessageInputValue = this.changeMessageInputValue.bind(this);
-    this.handleMessageInputKeyUp = this.handleMessageInputKeyUp.bind(this);
+    this.submitMessageOnEnterKeyUp = this.submitMessageOnEnterKeyUp.bind(this);
+    this.changeUsernameInputValue = this.changeUsernameInputValue.bind(this);
     this.postMessageToServer = this.postMessageToServer.bind(this);
     this.addMessageToMessageList = this.addMessageToMessageList.bind(this);
     this.getAllMessages = this.getAllMessages.bind(this);
@@ -35,7 +36,6 @@ class App extends React.Component {
   componentDidMount() {
     //open socket 'on' listeners
     socket.on('broadcast:message', message => {
-      console.log('asdfasdfasdf');
       this.addMessageToMessageList(message);
     });
   }
@@ -49,7 +49,7 @@ class App extends React.Component {
   getAllMessages(messageUrl) {
     fetch(messageUrl)
       .then(res => res.json())
-      .then(responseObj => responseObj.messages)
+      .then(responseObj => responseObj.body.messages)
       .then(messageArray => {
         // messageArray is NOT indexed by timestamp, so we must sort accordingly.
         messageArray = messageArray.sort((m1,m2) => {
@@ -68,12 +68,13 @@ class App extends React.Component {
     });
   }
 
-  handleMessageInputKeyUp(event) {
-    // if Enter key is pressed and released
+  submitMessageOnEnterKeyUp(event) {
+    // If Enter key is pressed and released
     if (event.keyCode == '13' && event.target.value !== '') {
-      const { messageInputValue, username } = this.state;
+      const { messageInputValue, usernameInputValue } = this.state;
+
       const messageObject = {
-        author: username,
+        author: usernameInputValue || 'Anonymous',
         content: messageInputValue,
         timestamp: Date.now(),
       }
@@ -87,9 +88,23 @@ class App extends React.Component {
     }
   }
 
+  changeUsernameInputValue(event) {
+    this.setState({
+      usernameInputValue: event.target.value,
+    });
+  }
+
   postMessageToServer(messageObject) {
     socket.emit('send:message', messageObject);
-    // Maybe add a post to the server here so we can separate sockets out on the backend
+
+    fetch(`${apiUrl}/api/v1/messages`, {
+      method: 'POST',
+      body: JSON.stringify({
+        messageObject,
+      }),
+    }).then(res => res.json())
+      .then(json => console.log(json.body))
+      .catch(err => console.error(err));
   }
 
   addMessageToMessageList(messageObject) {
@@ -103,17 +118,17 @@ class App extends React.Component {
       <div>
         <Header />
         <div id="main-content">
-          <Sidebar />
-          <div 
-            id="message-list-container"
-            ref="messageList"
-          >
+          <Sidebar 
+            usernameInputValue = { this.state.usernameInputValue }
+            changeUsernameInputValue = { this.changeUsernameInputValue }
+          />
+          <div id="message-list-container" ref="messageList" >
               <MessageList messageArray = { this.state.messageArray }/>
           </div>
         <Footer
           messageInputValue = { this.state.messageInputValue }
           changeMessageInputValue = { this.changeMessageInputValue }
-          handleMessageInputKeyUp = { this.handleMessageInputKeyUp }
+          submitMessageOnEnterKeyUp = { this.submitMessageOnEnterKeyUp }
         />
         </div>
       </div>

@@ -21492,11 +21492,12 @@
 	    _this.state = {
 	      messageInputValue: '',
 	      messageArray: [],
-	      username: 'Anonymous'
+	      usernameInputValue: ''
 	    };
 	
 	    _this.changeMessageInputValue = _this.changeMessageInputValue.bind(_this);
-	    _this.handleMessageInputKeyUp = _this.handleMessageInputKeyUp.bind(_this);
+	    _this.submitMessageOnEnterKeyUp = _this.submitMessageOnEnterKeyUp.bind(_this);
+	    _this.changeUsernameInputValue = _this.changeUsernameInputValue.bind(_this);
 	    _this.postMessageToServer = _this.postMessageToServer.bind(_this);
 	    _this.addMessageToMessageList = _this.addMessageToMessageList.bind(_this);
 	    _this.getAllMessages = _this.getAllMessages.bind(_this);
@@ -21515,7 +21516,6 @@
 	
 	      //open socket 'on' listeners
 	      socket.on('broadcast:message', function (message) {
-	        console.log('asdfasdfasdf');
 	        _this2.addMessageToMessageList(message);
 	      });
 	    }
@@ -21534,7 +21534,7 @@
 	      fetch(messageUrl).then(function (res) {
 	        return res.json();
 	      }).then(function (responseObj) {
-	        return responseObj.messages;
+	        return responseObj.body.messages;
 	      }).then(function (messageArray) {
 	        // messageArray is NOT indexed by timestamp, so we must sort accordingly.
 	        messageArray = messageArray.sort(function (m1, m2) {
@@ -21556,16 +21556,17 @@
 	      });
 	    }
 	  }, {
-	    key: 'handleMessageInputKeyUp',
-	    value: function handleMessageInputKeyUp(event) {
-	      // if Enter key is pressed and released
+	    key: 'submitMessageOnEnterKeyUp',
+	    value: function submitMessageOnEnterKeyUp(event) {
+	      // If Enter key is pressed and released
 	      if (event.keyCode == '13' && event.target.value !== '') {
 	        var _state = this.state;
 	        var messageInputValue = _state.messageInputValue;
-	        var username = _state.username;
+	        var usernameInputValue = _state.usernameInputValue;
+	
 	
 	        var messageObject = {
-	          author: username,
+	          author: usernameInputValue || 'Anonymous',
 	          content: messageInputValue,
 	          timestamp: Date.now()
 	        };
@@ -21579,10 +21580,29 @@
 	      }
 	    }
 	  }, {
+	    key: 'changeUsernameInputValue',
+	    value: function changeUsernameInputValue(event) {
+	      this.setState({
+	        usernameInputValue: event.target.value
+	      });
+	    }
+	  }, {
 	    key: 'postMessageToServer',
 	    value: function postMessageToServer(messageObject) {
 	      socket.emit('send:message', messageObject);
-	      // Maybe add a post to the server here so we can separate sockets out on the backend
+	
+	      fetch(apiUrl + '/api/v1/messages', {
+	        method: 'POST',
+	        body: JSON.stringify({
+	          messageObject: messageObject
+	        })
+	      }).then(function (res) {
+	        return res.json();
+	      }).then(function (json) {
+	        return console.log(json.body);
+	      }).catch(function (err) {
+	        return console.error(err);
+	      });
 	    }
 	  }, {
 	    key: 'addMessageToMessageList',
@@ -21602,19 +21622,19 @@
 	        _react2.default.createElement(
 	          'div',
 	          { id: 'main-content' },
-	          _react2.default.createElement(_Sidebar2.default, null),
+	          _react2.default.createElement(_Sidebar2.default, {
+	            usernameInputValue: this.state.usernameInputValue,
+	            changeUsernameInputValue: this.changeUsernameInputValue
+	          }),
 	          _react2.default.createElement(
 	            'div',
-	            {
-	              id: 'message-list-container',
-	              ref: 'messageList'
-	            },
+	            { id: 'message-list-container', ref: 'messageList' },
 	            _react2.default.createElement(_MessageList2.default, { messageArray: this.state.messageArray })
 	          ),
 	          _react2.default.createElement(_Footer2.default, {
 	            messageInputValue: this.state.messageInputValue,
 	            changeMessageInputValue: this.changeMessageInputValue,
-	            handleMessageInputKeyUp: this.handleMessageInputKeyUp
+	            submitMessageOnEnterKeyUp: this.submitMessageOnEnterKeyUp
 	          })
 	        )
 	      );
@@ -22134,7 +22154,7 @@
 	var Footer = function Footer(_ref) {
 	  var messageInputValue = _ref.messageInputValue;
 	  var changeMessageInputValue = _ref.changeMessageInputValue;
-	  var handleMessageInputKeyUp = _ref.handleMessageInputKeyUp;
+	  var submitMessageOnEnterKeyUp = _ref.submitMessageOnEnterKeyUp;
 	
 	  return _react2.default.createElement(
 	    'footer',
@@ -22142,7 +22162,7 @@
 	    _react2.default.createElement(_MessageInput2.default, {
 	      messageInputValue: messageInputValue,
 	      changeMessageInputValue: changeMessageInputValue,
-	      handleMessageInputKeyUp: handleMessageInputKeyUp
+	      submitMessageOnEnterKeyUp: submitMessageOnEnterKeyUp
 	    })
 	  );
 	};
@@ -22168,14 +22188,14 @@
 	var MessageInput = function MessageInput(_ref) {
 	  var messageInputValue = _ref.messageInputValue;
 	  var changeMessageInputValue = _ref.changeMessageInputValue;
-	  var handleMessageInputKeyUp = _ref.handleMessageInputKeyUp;
+	  var submitMessageOnEnterKeyUp = _ref.submitMessageOnEnterKeyUp;
 	
 	
 	  return _react2.default.createElement("input", {
 	    id: "message-input",
 	    value: messageInputValue,
 	    onChange: changeMessageInputValue,
-	    onKeyUp: handleMessageInputKeyUp
+	    onKeyUp: submitMessageOnEnterKeyUp
 	  });
 	};
 	
@@ -22185,7 +22205,7 @@
 /* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -22195,13 +22215,23 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _UsernameInput = __webpack_require__(181);
+	
+	var _UsernameInput2 = _interopRequireDefault(_UsernameInput);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var Sidebar = function Sidebar() {
+	var Sidebar = function Sidebar(_ref) {
+	  var usernameInputValue = _ref.usernameInputValue;
+	  var changeUsernameInputValue = _ref.changeUsernameInputValue;
+	
 	  return _react2.default.createElement(
-	    "div",
-	    { id: "sidebar" },
-	    "Sidebar"
+	    'div',
+	    { id: 'sidebar' },
+	    _react2.default.createElement(_UsernameInput2.default, {
+	      usernameInputValue: usernameInputValue,
+	      changeUsernameInputValue: changeUsernameInputValue
+	    })
 	  );
 	};
 	
@@ -22295,6 +22325,37 @@
 	};
 	
 	exports.default = MessageListEntry;
+
+/***/ },
+/* 181 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var UsernameInput = function UsernameInput(_ref) {
+	  var usernameInputValue = _ref.usernameInputValue;
+	  var changeUsernameInputValue = _ref.changeUsernameInputValue;
+	
+	
+	  return _react2.default.createElement("input", {
+	    id: "username-input",
+	    value: usernameInputValue,
+	    onChange: changeUsernameInputValue,
+	    placeholder: "Anonymous"
+	  });
+	};
+	
+	exports.default = UsernameInput;
 
 /***/ }
 /******/ ]);

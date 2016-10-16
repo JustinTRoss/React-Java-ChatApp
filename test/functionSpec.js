@@ -8,34 +8,40 @@ import { spy } from 'sinon';
 // Components:
 import App from '../js/components/App';
 
-const seedResponseJSON = {
-  "messages": [
-    {
-      "id": 1,
-      "author": "Jane",
-      "timestamp": 1421953410956,
-      "content": "Hello!"
-    },
-    {
-      "id": 2,
-      "author": "Sam",
-      "timestamp": 1421953434028,
-      "content": "How are you?",
-      "last_edited": 1421953454124
-    },
-    {
-      "id": 3,
-      "author": "Jane",
-      "timestamp": 1421953433276,
-      "content": "I'm in SAT!"
-    },
-    {
-      "id": 4,
-      "author": "Jane",
-      "timestamp": 1421953454129,
-      "content": "Flight is delayed. :P San Antonio TSA was the friendliest I've ever encountered, though. And I have a hamburger, a beer, and decent wifi."
-    }
-  ]
+const seedGetResponseJSON = {
+  "body": {
+    "messages": [
+      {
+        "id": 1,
+        "author": "Jane",
+        "timestamp": 1421953410956,
+        "content": "Hello!"
+      },
+      {
+        "id": 2,
+        "author": "Sam",
+        "timestamp": 1421953434028,
+        "content": "How are you?",
+        "last_edited": 1421953454124
+      },
+      {
+        "id": 3,
+        "author": "Jane",
+        "timestamp": 1421953433276,
+        "content": "I'm in SAT!"
+      },
+      {
+        "id": 4,
+        "author": "Jane",
+        "timestamp": 1421953454129,
+        "content": "Flight is delayed. :P San Antonio TSA was the friendliest I've ever encountered, though. And I have a hamburger, a beer, and decent wifi."
+      }
+    ]
+  }
+};
+
+const seedPostResponseJSON = {
+  "body": 'Message Received'
 };
 
 describe('Functions and logic', () => {
@@ -45,7 +51,7 @@ describe('Functions and logic', () => {
         nock('http://localhost:3005')
           .persist()
           .get('/api/v1/messages')
-          .reply(200, seedResponseJSON);
+          .reply(200, seedGetResponseJSON);
       });
 
       it('calls componentWillMount once', () => {
@@ -71,28 +77,32 @@ describe('Functions and logic', () => {
     });
 
     describe('Async functions', () => {
-      describe('getAllMessages', () => {
-
         before(function() {
           nock('http://localhost:3005')
             .persist()
             .get('/api/v1/messages')
-            .reply(200, seedResponseJSON);
+            .reply(200, seedGetResponseJSON);
+
+          nock('http://localhost:3005')
+            .persist()
+            .post('/api/v1/messages')
+            .reply(200, seedPostResponseJSON);
         });
 
+      describe('getAllMessages', () => {
         it('is called once on render', () => {
           spy(App.prototype, 'getAllMessages');
           const wrapper = mount(<App />);
           expect(App.prototype.getAllMessages.calledOnce).to.equal(true);
         });
 
-        it('should change messageArray state to equal seedResponseJSON.messages sorted by timestamp', (done) => {
+        it('should change messageArray state to equal seedGetResponseJSON.body.messages sorted by timestamp', (done) => {
           const wrapper = mount(<App />);
           expect(wrapper.state().messageArray).to.deep.equal([]);
           setTimeout(() => {
             wrapper.update();
             expect(wrapper.state().messageArray).to.deep.equal(
-              seedResponseJSON.messages.sort((m1, m2) => {
+              seedGetResponseJSON.body.messages.sort((m1, m2) => {
                 return m1.timestamp - m2.timestamp;
               })
             );
@@ -123,9 +133,9 @@ describe('Functions and logic', () => {
         });
       });
 
-      describe('handleMessageInputKeyUp', () => {
+      describe('submitMessageOnEnterKeyUp', () => {
         before(function() {
-          this.spy1 = spy(App.prototype, 'handleMessageInputKeyUp');
+          this.spy1 = spy(App.prototype, 'submitMessageOnEnterKeyUp');
           this.spy2 = spy(App.prototype, 'addMessageToMessageList');
           this.spy3 = spy(App.prototype, 'postMessageToServer');
         });
@@ -139,26 +149,26 @@ describe('Functions and logic', () => {
         it('should be called once for each key pressed KeyUp', () => {
           const wrapper = mount(<App />);
           const messageInput = wrapper.find('#message-input')
-          expect(App.prototype.handleMessageInputKeyUp.callCount).to.deep.equal(0);
+          expect(App.prototype.submitMessageOnEnterKeyUp.callCount).to.deep.equal(0);
           messageInput.simulate('keyUp', { keyCode: 2 });
-          expect(App.prototype.handleMessageInputKeyUp.callCount).to.deep.equal(1);
+          expect(App.prototype.submitMessageOnEnterKeyUp.callCount).to.deep.equal(1);
           messageInput.simulate('keyUp', { keyCode: 31 });
-          expect(App.prototype.handleMessageInputKeyUp.callCount).to.deep.equal(2);
+          expect(App.prototype.submitMessageOnEnterKeyUp.callCount).to.deep.equal(2);
           messageInput.simulate('keyUp', { keyCode: 13 });
-          expect(App.prototype.handleMessageInputKeyUp.callCount).to.deep.equal(3);
+          expect(App.prototype.submitMessageOnEnterKeyUp.callCount).to.deep.equal(3);
         });
 
         it('should clear message-input only upon \'Enter\' KeyUp', () => {
           const wrapper = mount(<App />);
           const messageInput = wrapper.find('#message-input')
           messageInput.simulate('change', { target: { value: 'My new value' } });
-          expect(App.prototype.handleMessageInputKeyUp.callCount).to.deep.equal(0);
+          expect(App.prototype.submitMessageOnEnterKeyUp.callCount).to.deep.equal(0);
           messageInput.simulate('keyUp', { keyCode: 2 });
-          expect(App.prototype.handleMessageInputKeyUp.callCount).to.deep.equal(1);
+          expect(App.prototype.submitMessageOnEnterKeyUp.callCount).to.deep.equal(1);
           messageInput.simulate('keyUp', { keyCode: 31 });
-          expect(App.prototype.handleMessageInputKeyUp.callCount).to.deep.equal(2);
+          expect(App.prototype.submitMessageOnEnterKeyUp.callCount).to.deep.equal(2);
           messageInput.simulate('keyUp', { keyCode: 13 });
-          expect(App.prototype.handleMessageInputKeyUp.callCount).to.deep.equal(3);
+          expect(App.prototype.submitMessageOnEnterKeyUp.callCount).to.deep.equal(3);
         });
 
         it('should not call addMessageToMessageList if a non-\'Enter\' key is released', () => {

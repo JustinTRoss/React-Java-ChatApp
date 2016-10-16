@@ -11,6 +11,10 @@ app.get('/api/v1/messages', (req, res) => {
   res.sendFile(__dirname + '/fixtures/fakedata.json');
 });
 
+app.post('/api/v1/messages', (req, res) => {
+  res.send({ body: 'Message Received' });
+});
+
 app.use(express.static(__dirname));
 
 

@@ -1,6 +1,6 @@
 (here is where your spec/explanation to the tinychat backend developer goes)
 
-There are three websocket events interacting with the backend and two http calls. The websockets are handled through Socket.io, and the http calls expect JSON returns.
+There are three websocket events interacting with the backend and two http calls. The websockets are handled through Socket.io, and the http calls send JSON and expect JSON in return.
 
 Socket events:
 
@@ -32,18 +32,20 @@ Http endpoints:
 				Required: none
 				Optional: none 
 			Success payload:
-				response.body = JSON {
-					messages: {
-						author: string 
-						content: string
-						id: int 
-						timestamp: date (milliseconds)
-						last_edited: date (milliseconds)
+				response = JSON {
+					body: {
+						messages: {
+							author: string 
+							content: string
+							id: int 
+							timestamp: date (milliseconds)
+							last_edited: date (milliseconds)
+						}
+						last_seen: date (milliseconds)
 					}
-					last_seen: date (milliseconds)
 				}
 			Error payload:
-				response.body = 'Error retrieving messages'
+				response = { body: 'Error retrieving messages' }
 
 		- POST:
 			Description: When a user submits a message, we will simultaneously send this message to this endpoint in addition to the websocket trigger to allow us to separate sockets from our main server.
@@ -53,8 +55,12 @@ Http endpoints:
 					Content: string
 				Optional: none
 			Success payload:
-				response.body = 'Message Sent'
+				response = JSON {
+					body: 'Message Received'
+				}
 			Error payload:
-				response.body = 'Error sending message'
+				response.body = {
+					body: 'Error sending message'
+				}
 
 

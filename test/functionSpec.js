@@ -46,13 +46,19 @@ const seedPostResponseJSON = {
 
 describe('Functions and logic', () => {
   describe('<App />', () => {
+    before(function() {
+      nock('http://localhost:3005')
+        .persist()
+        .get('/api/v1/messages')
+        .reply(200, seedGetResponseJSON);
+
+      nock('http://localhost:3005')
+        .persist()
+        .post('/api/v1/messages')
+        .reply(200, seedPostResponseJSON);
+    });
+    
     describe('Lifecycle hooks', () => {
-      before(function() {
-        nock('http://localhost:3005')
-          .persist()
-          .get('/api/v1/messages')
-          .reply(200, seedGetResponseJSON);
-      });
 
       it('calls componentWillMount once', () => {
         spy(App.prototype, 'componentWillMount');
@@ -77,18 +83,6 @@ describe('Functions and logic', () => {
     });
 
     describe('Async functions', () => {
-        before(function() {
-          nock('http://localhost:3005')
-            .persist()
-            .get('/api/v1/messages')
-            .reply(200, seedGetResponseJSON);
-
-          nock('http://localhost:3005')
-            .persist()
-            .post('/api/v1/messages')
-            .reply(200, seedPostResponseJSON);
-        });
-
       describe('getAllMessages', () => {
         it('is called once on render', () => {
           spy(App.prototype, 'getAllMessages');

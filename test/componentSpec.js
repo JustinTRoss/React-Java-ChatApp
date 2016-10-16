@@ -1,13 +1,15 @@
-import { expect, toEqual } from 'chai';
-import 'mocha';
+import { expect } from 'chai';
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
-import Header from '../client/components/Header';
-import Sidebar from '../client/components/Sidebar';
-import MessageList from '../client/components/MessageList';
-import MessageListEntry from '../client/components/MessageListEntry';
-import Footer from '../client/components/Footer';
-import MessageInput from '../client/components/MessageInput';
+
+// Components:
+import App from '../js/components/App';
+import Header from '../js/components/Header';
+import Sidebar from '../js/components/Sidebar';
+import MessageList from '../js/components/MessageList';
+import MessageListEntry from '../js/components/MessageListEntry';
+import Footer from '../js/components/Footer';
+import MessageInput from '../js/components/MessageInput';
 
 const seedMessageJSON = {
   "messages": [
@@ -39,11 +41,25 @@ const seedMessageJSON = {
   ]
 };
 
-describe('TinyChat Application', () => {
-  const renderer = TestUtils.createRenderer();
+describe('TinyChat Application Components:', () => {
+  describe('Stateful Components:', () => {
+    const renderer = TestUtils.createRenderer();
+    describe('App Component:', () => {
+      beforeEach(() => {
+        renderer.render(<App />);
+      });
 
-  describe('Functional Stateless Components', () => {
-    describe('Header Component', () => {
+      it('renders a div with two children', () => {
+        const node = renderer.getRenderOutput();
+        expect(node.type).to.deep.equal('div');
+        expect(node.props.children).to.have.lengthOf(2);
+      });
+    });
+  });
+
+  describe('Functional Stateless Components:', () => {
+    const renderer = TestUtils.createRenderer();
+    describe('Header Component:', () => {
       beforeEach(() => {
         renderer.render(<Header />);
       });
@@ -55,7 +71,7 @@ describe('TinyChat Application', () => {
       });
     });
 
-    describe('Sidebar Component', () => {
+    describe('Sidebar Component:', () => {
       beforeEach(() => {
         renderer.render(<Sidebar />);
       });
@@ -67,7 +83,7 @@ describe('TinyChat Application', () => {
       });
     });
 
-    describe('MessageList Component', () => {
+    describe('MessageList Component:', () => {
       const messages = seedMessageJSON.messages;
       const numberOfMessages = messages.length;
 
@@ -83,10 +99,10 @@ describe('TinyChat Application', () => {
 
       it('renders as many children as messages passed', () => {
         const node = renderer.getRenderOutput();
-        expect(node.props.children.length).to.deep.equal(numberOfMessages);
+        expect(node.props.children).to.have.lengthOf(numberOfMessages);
       });
 
-      describe('MessageListEntry Component', () => {
+      describe('MessageListEntry Component:', () => {
         beforeEach(() => {
           renderer.render(
             <MessageListEntry
@@ -103,18 +119,12 @@ describe('TinyChat Application', () => {
 
         it('renders the appropriate author, content, and timestamp', () => {
           const node = renderer.getRenderOutput();
-          expect(node.props.children).to.deep.equal(
-            <span>
-              <span className="message-author">{`${messages[0].author}: `}</span>
-              <span className="message-content">{messages[0].content}</span>
-              <span className="message-timestamp">{`${new Date(messages[0].timestamp)}`}</span>
-            </span>
-          );
+          expect(node.props.children).to.have.lengthOf(2);
         });
       });
     });
 
-    describe('Footer Component', () => {
+    describe('Footer Component:', () => {
       beforeEach(() => {
         renderer.render(
           <Footer
@@ -142,7 +152,7 @@ describe('TinyChat Application', () => {
         );
       });
 
-      describe('MessageInput Component', () => {
+      describe('MessageInput Component:', () => {
         beforeEach(() => {
           renderer.render(<MessageInput />);
         });
@@ -152,27 +162,6 @@ describe('TinyChat Application', () => {
           expect(node.type).to.deep.equal('input');
           expect(node.props.id).to.be.equal('message-input');
         });
-      });
-    });
-  });
-
-  describe('Asynchronous functions', () => {
-    describe('getAllMessages', () => {
-      it('should ', () => {
-        const input1 = 'input1';
-        const input2 = 'input2';
-        const expectedOutcome = 'expectedOutcome';
-
-        expect(someFunc(input1, input2)).to.equal(expectedOutcome);
-      });
-
-      it('should create \'some\' property of \'test\' object if not already existing', () => {
-        const test = {};
-        const input1 = 'i1';
-        const input2 = 'i2';
-        someFunc(input1, input2);
-
-        expect(test.some).to.be.ok;
       });
     });
   });

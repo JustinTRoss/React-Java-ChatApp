@@ -5,6 +5,7 @@ Routes:
 Endpoints:
 	- /api/v1/messages
 		- GET:
+			Description: When page loads, we will use this endpoint to retrieve all existing messages
 			Parameters:
 				Required: none
 				Optional: none 
@@ -23,6 +24,7 @@ Endpoints:
 				response.body = 'Error retrieving messages'
 
 		- POST:
+			Description: When a user submits a message, we will simultaneously send this message to this endpoint in addition to the websocket trigger to allow us to separate sockets from our main server.
 			Parameters:
 				Required:
 					Author: string

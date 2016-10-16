@@ -21443,19 +21443,21 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Header = __webpack_require__(173);
+	__webpack_require__(173);
+	
+	var _Header = __webpack_require__(175);
 	
 	var _Header2 = _interopRequireDefault(_Header);
 	
-	var _Footer = __webpack_require__(174);
+	var _Footer = __webpack_require__(176);
 	
 	var _Footer2 = _interopRequireDefault(_Footer);
 	
-	var _Sidebar = __webpack_require__(176);
+	var _Sidebar = __webpack_require__(178);
 	
 	var _Sidebar2 = _interopRequireDefault(_Sidebar);
 	
-	var _MessageList = __webpack_require__(177);
+	var _MessageList = __webpack_require__(179);
 	
 	var _MessageList2 = _interopRequireDefault(_MessageList);
 	
@@ -21467,6 +21469,23 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
+	// Socket + Testing workaround for window object.
+	var window = window || {
+	  io: function io() {
+	    return {
+	      on: function on() {
+	        return null;
+	      },
+	      emit: function emit() {
+	        return null;
+	      }
+	    };
+	  }
+	};
+	var socket = window.io();
+	
+	// Components:
+	
 	var App = function (_React$Component) {
 	  _inherits(App, _React$Component);
 	
@@ -21477,13 +21496,14 @@
 	
 	    _this.state = {
 	      messageInputValue: '',
-	      messageArray: []
+	      messageArray: [],
+	      username: 'Anonymous'
 	    };
 	
 	    _this.changeMessageInputValue = _this.changeMessageInputValue.bind(_this);
 	    _this.handleMessageInputKeyUp = _this.handleMessageInputKeyUp.bind(_this);
 	    _this.postMessageToServer = _this.postMessageToServer.bind(_this);
-	    _this.addMessageToMessageStack = _this.addMessageToMessageStack.bind(_this);
+	    _this.addMessageToMessageList = _this.addMessageToMessageList.bind(_this);
 	    _this.getAllMessages = _this.getAllMessages.bind(_this);
 	    return _this;
 	  }
@@ -21491,34 +21511,41 @@
 	  _createClass(App, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      this.getAllMessages();
+	      this.getAllMessages('http://localhost:3005/fixtures/fakedata.json');
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+	
+	      //open socket 'on' listeners
+	      socket.on('broadcast:message', function (message) {
+	        _this2.addMessageToMessageList(message);
+	      });
 	    }
 	  }, {
 	    key: 'componentDidUpdate',
 	    value: function componentDidUpdate() {
-	      // Auto-focus message div to latest messages
+	      // Auto-focus message-list div to latest messages
 	      var messageList = this.refs.messageList;
 	      messageList.scrollTop = messageList.scrollHeight;
-	      console.log(messageList.scrollTop, messageList.scrollHeight);
 	    }
 	  }, {
 	    key: 'getAllMessages',
-	    value: function getAllMessages() {
-	      var _this2 = this;
+	    value: function getAllMessages(messageUrl) {
+	      var _this3 = this;
 	
-	      var messageUrl = '/fixtures/fakedata.json';
 	      fetch(messageUrl).then(function (res) {
 	        return res.json();
 	      }).then(function (responseObj) {
 	        return responseObj.messages;
 	      }).then(function (messageArray) {
-	
 	        // messageArray is NOT indexed by timestamp, so we must sort accordingly.
 	        messageArray = messageArray.sort(function (m1, m2) {
 	          return m1.timestamp - m2.timestamp;
 	        });
 	
-	        _this2.setState({
+	        _this3.setState({
 	          messageArray: messageArray
 	        });
 	      }).catch(function (err) {
@@ -21535,10 +21562,20 @@
 	  }, {
 	    key: 'handleMessageInputKeyUp',
 	    value: function handleMessageInputKeyUp(event) {
-	      // if Enter key is pressed
-	      if (event.keyCode == '13') {
-	        this.addMessageToMessageStack('test');
-	        this.postMessageToServer('test');
+	      // if Enter key is pressed and released
+	      if (event.keyCode == '13' && event.target.value !== '') {
+	        var _state = this.state;
+	        var messageInputValue = _state.messageInputValue;
+	        var username = _state.username;
+	
+	        var messageObject = {
+	          author: username,
+	          content: messageInputValue,
+	          timestamp: Date.now()
+	        };
+	
+	        this.addMessageToMessageList(messageObject);
+	        this.postMessageToServer(messageObject);
 	
 	        this.setState({
 	          messageInputValue: ''
@@ -21547,10 +21584,18 @@
 	    }
 	  }, {
 	    key: 'postMessageToServer',
-	    value: function postMessageToServer(message) {}
+	    value: function postMessageToServer(messageObject) {
+	      socket.emit('send:message', messageObject);
+	      // Maybe add a post to the server here so we can separate sockets out on the backend
+	    }
 	  }, {
-	    key: 'addMessageToMessageStack',
-	    value: function addMessageToMessageStack(message) {}
+	    key: 'addMessageToMessageList',
+	    value: function addMessageToMessageList(messageObject) {
+	      var messageArray = this.state.messageArray;
+	
+	      messageArray.push(messageObject);
+	      this.setState({ messageArray: messageArray });
+	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
@@ -21589,6 +21634,457 @@
 /* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// the whatwg-fetch polyfill installs the fetch() function
+	// on the global object (window or self)
+	//
+	// Return that as the export for use in Webpack, Browserify etc.
+	__webpack_require__(174);
+	module.exports = self.fetch.bind(self);
+
+
+/***/ },
+/* 174 */
+/***/ function(module, exports) {
+
+	(function(self) {
+	  'use strict';
+	
+	  if (self.fetch) {
+	    return
+	  }
+	
+	  var support = {
+	    searchParams: 'URLSearchParams' in self,
+	    iterable: 'Symbol' in self && 'iterator' in Symbol,
+	    blob: 'FileReader' in self && 'Blob' in self && (function() {
+	      try {
+	        new Blob()
+	        return true
+	      } catch(e) {
+	        return false
+	      }
+	    })(),
+	    formData: 'FormData' in self,
+	    arrayBuffer: 'ArrayBuffer' in self
+	  }
+	
+	  function normalizeName(name) {
+	    if (typeof name !== 'string') {
+	      name = String(name)
+	    }
+	    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
+	      throw new TypeError('Invalid character in header field name')
+	    }
+	    return name.toLowerCase()
+	  }
+	
+	  function normalizeValue(value) {
+	    if (typeof value !== 'string') {
+	      value = String(value)
+	    }
+	    return value
+	  }
+	
+	  // Build a destructive iterator for the value list
+	  function iteratorFor(items) {
+	    var iterator = {
+	      next: function() {
+	        var value = items.shift()
+	        return {done: value === undefined, value: value}
+	      }
+	    }
+	
+	    if (support.iterable) {
+	      iterator[Symbol.iterator] = function() {
+	        return iterator
+	      }
+	    }
+	
+	    return iterator
+	  }
+	
+	  function Headers(headers) {
+	    this.map = {}
+	
+	    if (headers instanceof Headers) {
+	      headers.forEach(function(value, name) {
+	        this.append(name, value)
+	      }, this)
+	
+	    } else if (headers) {
+	      Object.getOwnPropertyNames(headers).forEach(function(name) {
+	        this.append(name, headers[name])
+	      }, this)
+	    }
+	  }
+	
+	  Headers.prototype.append = function(name, value) {
+	    name = normalizeName(name)
+	    value = normalizeValue(value)
+	    var list = this.map[name]
+	    if (!list) {
+	      list = []
+	      this.map[name] = list
+	    }
+	    list.push(value)
+	  }
+	
+	  Headers.prototype['delete'] = function(name) {
+	    delete this.map[normalizeName(name)]
+	  }
+	
+	  Headers.prototype.get = function(name) {
+	    var values = this.map[normalizeName(name)]
+	    return values ? values[0] : null
+	  }
+	
+	  Headers.prototype.getAll = function(name) {
+	    return this.map[normalizeName(name)] || []
+	  }
+	
+	  Headers.prototype.has = function(name) {
+	    return this.map.hasOwnProperty(normalizeName(name))
+	  }
+	
+	  Headers.prototype.set = function(name, value) {
+	    this.map[normalizeName(name)] = [normalizeValue(value)]
+	  }
+	
+	  Headers.prototype.forEach = function(callback, thisArg) {
+	    Object.getOwnPropertyNames(this.map).forEach(function(name) {
+	      this.map[name].forEach(function(value) {
+	        callback.call(thisArg, value, name, this)
+	      }, this)
+	    }, this)
+	  }
+	
+	  Headers.prototype.keys = function() {
+	    var items = []
+	    this.forEach(function(value, name) { items.push(name) })
+	    return iteratorFor(items)
+	  }
+	
+	  Headers.prototype.values = function() {
+	    var items = []
+	    this.forEach(function(value) { items.push(value) })
+	    return iteratorFor(items)
+	  }
+	
+	  Headers.prototype.entries = function() {
+	    var items = []
+	    this.forEach(function(value, name) { items.push([name, value]) })
+	    return iteratorFor(items)
+	  }
+	
+	  if (support.iterable) {
+	    Headers.prototype[Symbol.iterator] = Headers.prototype.entries
+	  }
+	
+	  function consumed(body) {
+	    if (body.bodyUsed) {
+	      return Promise.reject(new TypeError('Already read'))
+	    }
+	    body.bodyUsed = true
+	  }
+	
+	  function fileReaderReady(reader) {
+	    return new Promise(function(resolve, reject) {
+	      reader.onload = function() {
+	        resolve(reader.result)
+	      }
+	      reader.onerror = function() {
+	        reject(reader.error)
+	      }
+	    })
+	  }
+	
+	  function readBlobAsArrayBuffer(blob) {
+	    var reader = new FileReader()
+	    reader.readAsArrayBuffer(blob)
+	    return fileReaderReady(reader)
+	  }
+	
+	  function readBlobAsText(blob) {
+	    var reader = new FileReader()
+	    reader.readAsText(blob)
+	    return fileReaderReady(reader)
+	  }
+	
+	  function Body() {
+	    this.bodyUsed = false
+	
+	    this._initBody = function(body) {
+	      this._bodyInit = body
+	      if (typeof body === 'string') {
+	        this._bodyText = body
+	      } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
+	        this._bodyBlob = body
+	      } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
+	        this._bodyFormData = body
+	      } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
+	        this._bodyText = body.toString()
+	      } else if (!body) {
+	        this._bodyText = ''
+	      } else if (support.arrayBuffer && ArrayBuffer.prototype.isPrototypeOf(body)) {
+	        // Only support ArrayBuffers for POST method.
+	        // Receiving ArrayBuffers happens via Blobs, instead.
+	      } else {
+	        throw new Error('unsupported BodyInit type')
+	      }
+	
+	      if (!this.headers.get('content-type')) {
+	        if (typeof body === 'string') {
+	          this.headers.set('content-type', 'text/plain;charset=UTF-8')
+	        } else if (this._bodyBlob && this._bodyBlob.type) {
+	          this.headers.set('content-type', this._bodyBlob.type)
+	        } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
+	          this.headers.set('content-type', 'application/x-www-form-urlencoded;charset=UTF-8')
+	        }
+	      }
+	    }
+	
+	    if (support.blob) {
+	      this.blob = function() {
+	        var rejected = consumed(this)
+	        if (rejected) {
+	          return rejected
+	        }
+	
+	        if (this._bodyBlob) {
+	          return Promise.resolve(this._bodyBlob)
+	        } else if (this._bodyFormData) {
+	          throw new Error('could not read FormData body as blob')
+	        } else {
+	          return Promise.resolve(new Blob([this._bodyText]))
+	        }
+	      }
+	
+	      this.arrayBuffer = function() {
+	        return this.blob().then(readBlobAsArrayBuffer)
+	      }
+	
+	      this.text = function() {
+	        var rejected = consumed(this)
+	        if (rejected) {
+	          return rejected
+	        }
+	
+	        if (this._bodyBlob) {
+	          return readBlobAsText(this._bodyBlob)
+	        } else if (this._bodyFormData) {
+	          throw new Error('could not read FormData body as text')
+	        } else {
+	          return Promise.resolve(this._bodyText)
+	        }
+	      }
+	    } else {
+	      this.text = function() {
+	        var rejected = consumed(this)
+	        return rejected ? rejected : Promise.resolve(this._bodyText)
+	      }
+	    }
+	
+	    if (support.formData) {
+	      this.formData = function() {
+	        return this.text().then(decode)
+	      }
+	    }
+	
+	    this.json = function() {
+	      return this.text().then(JSON.parse)
+	    }
+	
+	    return this
+	  }
+	
+	  // HTTP methods whose capitalization should be normalized
+	  var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT']
+	
+	  function normalizeMethod(method) {
+	    var upcased = method.toUpperCase()
+	    return (methods.indexOf(upcased) > -1) ? upcased : method
+	  }
+	
+	  function Request(input, options) {
+	    options = options || {}
+	    var body = options.body
+	    if (Request.prototype.isPrototypeOf(input)) {
+	      if (input.bodyUsed) {
+	        throw new TypeError('Already read')
+	      }
+	      this.url = input.url
+	      this.credentials = input.credentials
+	      if (!options.headers) {
+	        this.headers = new Headers(input.headers)
+	      }
+	      this.method = input.method
+	      this.mode = input.mode
+	      if (!body) {
+	        body = input._bodyInit
+	        input.bodyUsed = true
+	      }
+	    } else {
+	      this.url = input
+	    }
+	
+	    this.credentials = options.credentials || this.credentials || 'omit'
+	    if (options.headers || !this.headers) {
+	      this.headers = new Headers(options.headers)
+	    }
+	    this.method = normalizeMethod(options.method || this.method || 'GET')
+	    this.mode = options.mode || this.mode || null
+	    this.referrer = null
+	
+	    if ((this.method === 'GET' || this.method === 'HEAD') && body) {
+	      throw new TypeError('Body not allowed for GET or HEAD requests')
+	    }
+	    this._initBody(body)
+	  }
+	
+	  Request.prototype.clone = function() {
+	    return new Request(this)
+	  }
+	
+	  function decode(body) {
+	    var form = new FormData()
+	    body.trim().split('&').forEach(function(bytes) {
+	      if (bytes) {
+	        var split = bytes.split('=')
+	        var name = split.shift().replace(/\+/g, ' ')
+	        var value = split.join('=').replace(/\+/g, ' ')
+	        form.append(decodeURIComponent(name), decodeURIComponent(value))
+	      }
+	    })
+	    return form
+	  }
+	
+	  function headers(xhr) {
+	    var head = new Headers()
+	    var pairs = (xhr.getAllResponseHeaders() || '').trim().split('\n')
+	    pairs.forEach(function(header) {
+	      var split = header.trim().split(':')
+	      var key = split.shift().trim()
+	      var value = split.join(':').trim()
+	      head.append(key, value)
+	    })
+	    return head
+	  }
+	
+	  Body.call(Request.prototype)
+	
+	  function Response(bodyInit, options) {
+	    if (!options) {
+	      options = {}
+	    }
+	
+	    this.type = 'default'
+	    this.status = options.status
+	    this.ok = this.status >= 200 && this.status < 300
+	    this.statusText = options.statusText
+	    this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers)
+	    this.url = options.url || ''
+	    this._initBody(bodyInit)
+	  }
+	
+	  Body.call(Response.prototype)
+	
+	  Response.prototype.clone = function() {
+	    return new Response(this._bodyInit, {
+	      status: this.status,
+	      statusText: this.statusText,
+	      headers: new Headers(this.headers),
+	      url: this.url
+	    })
+	  }
+	
+	  Response.error = function() {
+	    var response = new Response(null, {status: 0, statusText: ''})
+	    response.type = 'error'
+	    return response
+	  }
+	
+	  var redirectStatuses = [301, 302, 303, 307, 308]
+	
+	  Response.redirect = function(url, status) {
+	    if (redirectStatuses.indexOf(status) === -1) {
+	      throw new RangeError('Invalid status code')
+	    }
+	
+	    return new Response(null, {status: status, headers: {location: url}})
+	  }
+	
+	  self.Headers = Headers
+	  self.Request = Request
+	  self.Response = Response
+	
+	  self.fetch = function(input, init) {
+	    return new Promise(function(resolve, reject) {
+	      var request
+	      if (Request.prototype.isPrototypeOf(input) && !init) {
+	        request = input
+	      } else {
+	        request = new Request(input, init)
+	      }
+	
+	      var xhr = new XMLHttpRequest()
+	
+	      function responseURL() {
+	        if ('responseURL' in xhr) {
+	          return xhr.responseURL
+	        }
+	
+	        // Avoid security warnings on getResponseHeader when not allowed by CORS
+	        if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
+	          return xhr.getResponseHeader('X-Request-URL')
+	        }
+	
+	        return
+	      }
+	
+	      xhr.onload = function() {
+	        var options = {
+	          status: xhr.status,
+	          statusText: xhr.statusText,
+	          headers: headers(xhr),
+	          url: responseURL()
+	        }
+	        var body = 'response' in xhr ? xhr.response : xhr.responseText
+	        resolve(new Response(body, options))
+	      }
+	
+	      xhr.onerror = function() {
+	        reject(new TypeError('Network request failed'))
+	      }
+	
+	      xhr.ontimeout = function() {
+	        reject(new TypeError('Network request failed'))
+	      }
+	
+	      xhr.open(request.method, request.url, true)
+	
+	      if (request.credentials === 'include') {
+	        xhr.withCredentials = true
+	      }
+	
+	      if ('responseType' in xhr && support.blob) {
+	        xhr.responseType = 'blob'
+	      }
+	
+	      request.headers.forEach(function(value, name) {
+	        xhr.setRequestHeader(name, value)
+	      })
+	
+	      xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit)
+	    })
+	  }
+	  self.fetch.polyfill = true
+	})(typeof self !== 'undefined' ? self : this);
+
+
+/***/ },
+/* 175 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
@@ -21619,7 +22115,7 @@
 	exports.default = Header;
 
 /***/ },
-/* 174 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21632,7 +22128,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _MessageInput = __webpack_require__(175);
+	var _MessageInput = __webpack_require__(177);
 	
 	var _MessageInput2 = _interopRequireDefault(_MessageInput);
 	
@@ -21657,7 +22153,7 @@
 	exports.default = Footer;
 
 /***/ },
-/* 175 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21689,7 +22185,7 @@
 	exports.default = MessageInput;
 
 /***/ },
-/* 176 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21715,7 +22211,7 @@
 	exports.default = Sidebar;
 
 /***/ },
-/* 177 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21728,7 +22224,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _MessageListEntry = __webpack_require__(178);
+	var _MessageListEntry = __webpack_require__(180);
 	
 	var _MessageListEntry2 = _interopRequireDefault(_MessageListEntry);
 	
@@ -21754,7 +22250,7 @@
 	exports.default = MessageList;
 
 /***/ },
-/* 178 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21780,8 +22276,8 @@
 	    "div",
 	    { className: "message-list-entry" },
 	    _react2.default.createElement(
-	      "span",
-	      null,
+	      "div",
+	      { className: "message-text" },
 	      _react2.default.createElement(
 	        "span",
 	        { className: "message-author" },
@@ -21791,12 +22287,12 @@
 	        "span",
 	        { className: "message-content" },
 	        content
-	      ),
-	      _react2.default.createElement(
-	        "span",
-	        { className: "message-timestamp" },
-	        "" + new Date(timestamp)
 	      )
+	    ),
+	    _react2.default.createElement(
+	      "span",
+	      { className: "message-timestamp" },
+	      "" + new Date(timestamp)
 	    )
 	  );
 	};

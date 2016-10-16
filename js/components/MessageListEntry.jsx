@@ -5,11 +5,11 @@ const MessageListEntry = ({ message }) => {
 
   return (
     <div className="message-list-entry">
-      <span>
+      <div className="message-text">
         <span className="message-author">{`${author}: `}</span>
         <span className="message-content">{content}</span>
+      </div>
         <span className="message-timestamp">{`${new Date(timestamp)}`}</span>
-      </span>
     </div>
   );
 };

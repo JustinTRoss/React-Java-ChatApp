@@ -57,7 +57,7 @@ describe('Functions and logic', () => {
         .post('/api/v1/messages')
         .reply(200, seedPostResponseJSON);
     });
-    
+
     describe('Lifecycle hooks', () => {
 
       it('calls componentWillMount once', () => {
@@ -168,16 +168,18 @@ describe('Functions and logic', () => {
         it('should not call addMessageToMessageList if a non-\'Enter\' key is released', () => {
           expect(App.prototype.addMessageToMessageList.callCount).to.deep.equal(0);
           const wrapper = mount(<App />);
-          wrapper.find('#message-input').simulate('change', { target: { value: 'My new value' } });
-          wrapper.find('#message-input').simulate('keyUp', { keyCode: 21 });
+          const messageInput = wrapper.find('#message-input');
+          messageInput.simulate('change', { target: { value: 'My new value' } });
+          messageInput.simulate('keyUp', { keyCode: 21 });
           expect(App.prototype.addMessageToMessageList.callCount).to.deep.equal(0);
         });
 
         it('should not call postMessageToServer if a non-\'Enter\' key is released', () => {
           expect(App.prototype.postMessageToServer.callCount).to.deep.equal(0);
           const wrapper = mount(<App />);
-          wrapper.find('#message-input').simulate('change', { target: { value: 'My new value' } });
-          wrapper.find('#message-input').simulate('keyUp', { keyCode: 21 });
+          const messageInput = wrapper.find('#message-input');
+          messageInput.simulate('change', { target: { value: 'My new value' } });
+          messageInput.simulate('keyUp', { keyCode: 21 });
           expect(App.prototype.postMessageToServer.callCount).to.deep.equal(0);
         });
 
@@ -185,8 +187,9 @@ describe('Functions and logic', () => {
           expect(App.prototype.addMessageToMessageList.callCount).to.deep.equal(0);
 
           const wrapper = mount(<App />);
-          wrapper.find('#message-input').simulate('change', { target: { value: 'My new value' } });
-          wrapper.find('#message-input').simulate('keyUp', { keyCode: 13 });
+          const messageInput = wrapper.find('#message-input');
+          messageInput.simulate('change', { target: { value: 'My new value' } });
+          messageInput.simulate('keyUp', { keyCode: 13 });
           expect(App.prototype.addMessageToMessageList.callCount).to.deep.equal(1);
         });
 
@@ -194,8 +197,9 @@ describe('Functions and logic', () => {
           expect(App.prototype.postMessageToServer.callCount).to.deep.equal(0);
 
           const wrapper = mount(<App />);
-          wrapper.find('#message-input').simulate('change', { target: { value: 'My new value' } });
-          wrapper.find('#message-input').simulate('keyUp', { keyCode: 13 });
+          const messageInput = wrapper.find('#message-input');
+          messageInput.simulate('change', { target: { value: 'My new value' } });
+          messageInput.simulate('keyUp', { keyCode: 13 });
           expect(App.prototype.postMessageToServer.callCount).to.deep.equal(1);
         });
       });
@@ -206,8 +210,9 @@ describe('Functions and logic', () => {
 
           const wrapper = mount(<App />);
           const messageArrayLength = wrapper.state().messageArray.length;
-          wrapper.find('#message-input').simulate('change', { target: { value: 'My new value' } });
-          wrapper.find('#message-input').simulate('keyUp', { keyCode: 13 });
+          const messageInput = wrapper.find('#message-input');
+          messageInput.simulate('change', { target: { value: 'My new value' } });
+          messageInput.simulate('keyUp', { keyCode: 13 });
           expect(wrapper.state().messageArray).to.have.lengthOf(messageArrayLength + 1);
         });
       });

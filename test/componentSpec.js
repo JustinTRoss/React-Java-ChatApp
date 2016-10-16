@@ -93,9 +93,9 @@ describe('TinyChat Application Components:', () => {
         expect(node.props.id).to.deep.equal('sidebar');
       });
 
-      it('renders a UsernameInput child', () => {
+      it('renders a UsernameInput child inside of a div', () => {
         const node = renderer.getRenderOutput();
-        expect(node.props.children).to.deep.equal(
+        expect(node.props.children.props.children).to.contain(
           <UsernameInput
             usernameInputValue={'usernameInputValue'}
             changeUsernameInputValue={'changeUsernameInputValue'}

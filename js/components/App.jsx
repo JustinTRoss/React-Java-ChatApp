@@ -30,7 +30,7 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    this.getAllMessages(`${apiUrl}/api/v1/messages`);
+    this.getAllMessages();
   }
 
   componentDidMount() {
@@ -46,8 +46,9 @@ class App extends React.Component {
     messageList.scrollTop = messageList.scrollHeight;
   }
 
-  getAllMessages(messageUrl) {
-    fetch(messageUrl)
+  // Asynchronous functions:
+  getAllMessages() {
+    fetch(`${apiUrl}/api/v1/messages`)
       .then(res => res.json())
       .then(responseObj => responseObj.body.messages)
       .then(messageArray => {
@@ -60,6 +61,17 @@ class App extends React.Component {
           messageArray: messageArray,
         });
       }).catch(err => console.error('Error fetching messages: ', err));
+  }
+
+  postMessageToServer(messageObject) {
+    socket.emit('send:message', messageObject);
+
+    fetch(`${apiUrl}/api/v1/messages`, {
+      method: 'POST',
+      body: JSON.stringify({
+        messageObject,
+      }),
+    }).catch(err => console.error(err));
   }
 
   changeMessageInputValue(event) {
@@ -94,18 +106,6 @@ class App extends React.Component {
     });
   }
 
-  postMessageToServer(messageObject) {
-    socket.emit('send:message', messageObject);
-
-    fetch(`${apiUrl}/api/v1/messages`, {
-      method: 'POST',
-      body: JSON.stringify({
-        messageObject,
-      }),
-    }).then(res => res.json())
-      .then(json => console.log(json.body))
-      .catch(err => console.error(err));
-  }
 
   addMessageToMessageList(messageObject) {
     const { messageArray } = this.state;

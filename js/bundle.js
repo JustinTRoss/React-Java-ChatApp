@@ -21507,7 +21507,7 @@
 	  _createClass(App, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      this.getAllMessages(apiUrl + '/api/v1/messages');
+	      this.getAllMessages();
 	    }
 	  }, {
 	    key: 'componentDidMount',
@@ -21526,12 +21526,15 @@
 	      var messageList = this.refs.messageList;
 	      messageList.scrollTop = messageList.scrollHeight;
 	    }
+	
+	    // Asynchronous functions:
+	
 	  }, {
 	    key: 'getAllMessages',
-	    value: function getAllMessages(messageUrl) {
+	    value: function getAllMessages() {
 	      var _this3 = this;
 	
-	      fetch(messageUrl).then(function (res) {
+	      fetch(apiUrl + '/api/v1/messages').then(function (res) {
 	        return res.json();
 	      }).then(function (responseObj) {
 	        return responseObj.body.messages;
@@ -21546,6 +21549,20 @@
 	        });
 	      }).catch(function (err) {
 	        return console.error('Error fetching messages: ', err);
+	      });
+	    }
+	  }, {
+	    key: 'postMessageToServer',
+	    value: function postMessageToServer(messageObject) {
+	      socket.emit('send:message', messageObject);
+	
+	      fetch(apiUrl + '/api/v1/messages', {
+	        method: 'POST',
+	        body: JSON.stringify({
+	          messageObject: messageObject
+	        })
+	      }).catch(function (err) {
+	        return console.error(err);
 	      });
 	    }
 	  }, {
@@ -21584,24 +21601,6 @@
 	    value: function changeUsernameInputValue(event) {
 	      this.setState({
 	        usernameInputValue: event.target.value
-	      });
-	    }
-	  }, {
-	    key: 'postMessageToServer',
-	    value: function postMessageToServer(messageObject) {
-	      socket.emit('send:message', messageObject);
-	
-	      fetch(apiUrl + '/api/v1/messages', {
-	        method: 'POST',
-	        body: JSON.stringify({
-	          messageObject: messageObject
-	        })
-	      }).then(function (res) {
-	        return res.json();
-	      }).then(function (json) {
-	        return console.log(json.body);
-	      }).catch(function (err) {
-	        return console.error(err);
 	      });
 	    }
 	  }, {
@@ -22121,7 +22120,11 @@
 	    _react2.default.createElement(
 	      "h1",
 	      null,
-	      "tinychat",
+	      _react2.default.createElement(
+	        "span",
+	        null,
+	        "tinychat "
+	      ),
 	      _react2.default.createElement("span", { className: "glyphicon glyphicon-bullhorn" }),
 	      _react2.default.createElement("span", { className: "glyphicon glyphicon-globe" }),
 	      _react2.default.createElement("span", { className: "glyphicon glyphicon-heart" })
@@ -22228,10 +22231,19 @@
 	  return _react2.default.createElement(
 	    'div',
 	    { id: 'sidebar' },
-	    _react2.default.createElement(_UsernameInput2.default, {
-	      usernameInputValue: usernameInputValue,
-	      changeUsernameInputValue: changeUsernameInputValue
-	    })
+	    _react2.default.createElement(
+	      'div',
+	      { id: 'username-container' },
+	      _react2.default.createElement(
+	        'h4',
+	        null,
+	        'Enter your username: '
+	      ),
+	      _react2.default.createElement(_UsernameInput2.default, {
+	        usernameInputValue: usernameInputValue,
+	        changeUsernameInputValue: changeUsernameInputValue
+	      })
+	    )
 	  );
 	};
 	

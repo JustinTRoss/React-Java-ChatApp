@@ -11,8 +11,15 @@ body {
   top: 0;
   min-width: 100%;
   min-height: 64px;
+  max-height: 64px;
   display: block;
   border-bottom: 1px solid #e8e8e8;
+  color: #4d394b !important;
+}
+
+#header > h1 > span {
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 #footer {
@@ -44,8 +51,26 @@ body {
   top: 64px;
   min-height: 100%;
   min-width: 220px;
+  max-width: 220px;
   display: block;
   background-color: #4d394b;
+}
+
+#username-container {
+  display: flex;
+  flex-flow: column nowrap;
+  flex: 1 1 auto;
+  justify-content: space-around;
+  padding: 8px;
+  text-align: center;
+}
+
+#username-container > h4 {
+  color: snow;
+}
+
+#username-input {
+  border-radius: 4px;
 }
 
 #message-list-container {

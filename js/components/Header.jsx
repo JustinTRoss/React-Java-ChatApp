@@ -4,7 +4,7 @@ const Header = () => {
   return (
     <header id="header">
       <h1>
-        tinychat
+        <span>tinychat </span>
         <span className="glyphicon glyphicon-bullhorn"></span>
         <span className="glyphicon glyphicon-globe"></span>
         <span className="glyphicon glyphicon-heart"></span>

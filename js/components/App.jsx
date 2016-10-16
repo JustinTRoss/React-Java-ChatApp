@@ -1,16 +1,10 @@
-import React from 'react';
+// Testing workaround for window object and relative url path
 import 'isomorphic-fetch';
+const amTesting = process.env.NODE_ENV === 'test';
+const apiUrl = amTesting ? 'http://localhost:3005' : '';
 
-// Socket + Testing workaround for window object.
-const window = window || { 
-  io: () => { 
-    return {
-      on : () => null,
-      emit: () => null,
-    }; 
-  }
-};
-const socket = window.io();
+import React from 'react';
+const socket = !amTesting ? window.io() : { on : () => null, emit: () => null, };
 
 // Components:
 import Header from './Header';
@@ -35,12 +29,13 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    this.getAllMessages('http://localhost:3005/fixtures/fakedata.json');
+    this.getAllMessages(`${apiUrl}/api/v1/messages`);
   }
 
   componentDidMount() {
     //open socket 'on' listeners
     socket.on('broadcast:message', message => {
+      console.log('asdfasdfasdf');
       this.addMessageToMessageList(message);
     });
   }

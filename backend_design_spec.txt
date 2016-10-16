@@ -1,8 +1,30 @@
 (here is where your spec/explanation to the tinychat backend developer goes)
 
-Routes:
+There are three websocket events interacting with the backend and two http calls. The websockets are handled through Socket.io, and the http calls expect JSON returns.
 
-Endpoints:
+Socket events:
+
+Socket.io library is used for realtime message updates. The documentation for this library can be found at socket.io and includes guidance for backend development with socket.io events and triggers. Additionally, mockServer.js contains a mock server that entertains the websocket connection and events.
+
+	- 'connection'
+		triggered by: client
+		trigger: triggers each time a new client connection is made
+		digested by: server
+		function: notifies the server of a new socket connection and can be used to initilize event listeners 
+
+	- 'send:message'
+		triggered by: client
+		trigger: triggers each time a message is submitted from a client 
+		digested by: server
+		function: should trigger broadcast of a 'broadcast:message' event trigger to all sockets (clients) other than the sender  
+
+	- 'broadcast:message'
+		triggered by: server
+		trigger: should trigger each time a 'send:message' event is digested by the server
+		digested by: client
+		function: adds a new message to the client
+
+Http endpoints:
 	- /api/v1/messages
 		- GET:
 			Description: When page loads, we will use this endpoint to retrieve all existing messages
@@ -10,7 +32,7 @@ Endpoints:
 				Required: none
 				Optional: none 
 			Success payload:
-				response.body = {
+				response.body = JSON {
 					messages: {
 						author: string 
 						content: string

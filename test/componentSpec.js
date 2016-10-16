@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import nock from 'nock';
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
 
@@ -11,7 +12,7 @@ import MessageListEntry from '../js/components/MessageListEntry';
 import Footer from '../js/components/Footer';
 import MessageInput from '../js/components/MessageInput';
 
-const seedMessageJSON = {
+const seedResponseJSON = {
   "messages": [
     {
       "id": 1,
@@ -45,7 +46,11 @@ describe('TinyChat Application Components:', () => {
   describe('Stateful Components:', () => {
     const renderer = TestUtils.createRenderer();
     describe('App Component:', () => {
-      beforeEach(() => {
+      before(() => {
+        nock('http://localhost:3005')
+          .persist()
+          .get('/api/v1/messages')
+          .reply(200, seedResponseJSON);
         renderer.render(<App />);
       });
 
@@ -84,7 +89,7 @@ describe('TinyChat Application Components:', () => {
     });
 
     describe('MessageList Component:', () => {
-      const messages = seedMessageJSON.messages;
+      const messages = seedResponseJSON.messages;
       const numberOfMessages = messages.length;
 
       beforeEach(() => {

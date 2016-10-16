@@ -44,7 +44,7 @@ describe('Functions and logic', () => {
       before(function() {
         nock('http://localhost:3005')
           .persist()
-          .get('/fixtures/fakedata.json')
+          .get('/api/v1/messages')
           .reply(200, seedResponseJSON);
       });
 
@@ -76,9 +76,8 @@ describe('Functions and logic', () => {
         before(function() {
           nock('http://localhost:3005')
             .persist()
-            .get('/fixtures/fakedata.json')
+            .get('/api/v1/messages')
             .reply(200, seedResponseJSON);
-            console.log('test');
         });
 
         it('is called once on render', () => {

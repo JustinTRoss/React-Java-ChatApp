@@ -52,13 +52,13 @@
 	
 	var _reactDom = __webpack_require__(34);
 	
-	var _app = __webpack_require__(172);
+	var _App = __webpack_require__(182);
 	
-	var _app2 = _interopRequireDefault(_app);
+	var _App2 = _interopRequireDefault(_App);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	(0, _reactDom.render)(_react2.default.createElement(_app2.default, null), document.getElementById('app'));
+	(0, _reactDom.render)(_react2.default.createElement(_App2.default, null), document.getElementById('app'));
 
 /***/ },
 /* 1 */
@@ -21428,225 +21428,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 172 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	__webpack_require__(173);
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _Header = __webpack_require__(175);
-	
-	var _Header2 = _interopRequireDefault(_Header);
-	
-	var _Footer = __webpack_require__(176);
-	
-	var _Footer2 = _interopRequireDefault(_Footer);
-	
-	var _Sidebar = __webpack_require__(178);
-	
-	var _Sidebar2 = _interopRequireDefault(_Sidebar);
-	
-	var _MessageList = __webpack_require__(179);
-	
-	var _MessageList2 = _interopRequireDefault(_MessageList);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // Testing workaround for window object and relative url path
-	
-	
-	var amTesting = process.env.NODE_ENV === 'test';
-	var apiUrl = amTesting ? 'http://localhost:3005' : '';
-	
-	var socket = !amTesting ? window.io() : { on: function on() {
-	    return null;
-	  }, emit: function emit() {
-	    return null;
-	  } };
-	
-	// Components:
-	
-	var App = function (_React$Component) {
-	  _inherits(App, _React$Component);
-	
-	  function App(props) {
-	    _classCallCheck(this, App);
-	
-	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
-	
-	    _this.state = {
-	      messageInputValue: '',
-	      messageArray: [],
-	      usernameInputValue: ''
-	    };
-	
-	    _this.changeMessageInputValue = _this.changeMessageInputValue.bind(_this);
-	    _this.submitMessageOnEnterKeyUp = _this.submitMessageOnEnterKeyUp.bind(_this);
-	    _this.changeUsernameInputValue = _this.changeUsernameInputValue.bind(_this);
-	    _this.postMessageToServer = _this.postMessageToServer.bind(_this);
-	    _this.addMessageToMessageList = _this.addMessageToMessageList.bind(_this);
-	    _this.getAllMessages = _this.getAllMessages.bind(_this);
-	    return _this;
-	  }
-	
-	  _createClass(App, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      this.getAllMessages();
-	    }
-	  }, {
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      var _this2 = this;
-	
-	      //open socket 'on' listeners
-	      socket.on('broadcast:message', function (message) {
-	        _this2.addMessageToMessageList(message);
-	      });
-	    }
-	  }, {
-	    key: 'componentDidUpdate',
-	    value: function componentDidUpdate() {
-	      // Auto-focus message-list div to latest messages
-	      var messageList = this.refs.messageList;
-	      messageList.scrollTop = messageList.scrollHeight;
-	    }
-	
-	    // Asynchronous functions:
-	
-	  }, {
-	    key: 'getAllMessages',
-	    value: function getAllMessages() {
-	      var _this3 = this;
-	
-	      fetch(apiUrl + '/api/v1/messages').then(function (res) {
-	        return res.json();
-	      }).then(function (responseObj) {
-	        return responseObj.body.messages;
-	      }).then(function (messageArray) {
-	        // messageArray is NOT indexed by timestamp, so we must sort accordingly.
-	        messageArray = messageArray.sort(function (m1, m2) {
-	          return m1.timestamp - m2.timestamp;
-	        });
-	
-	        _this3.setState({
-	          messageArray: messageArray
-	        });
-	      }).catch(function (err) {
-	        return console.error('Error fetching messages: ', err);
-	      });
-	    }
-	  }, {
-	    key: 'postMessageToServer',
-	    value: function postMessageToServer(messageObject) {
-	      socket.emit('send:message', messageObject);
-	
-	      fetch(apiUrl + '/api/v1/messages', {
-	        method: 'POST',
-	        body: JSON.stringify({
-	          messageObject: messageObject
-	        })
-	      }).catch(function (err) {
-	        return console.error(err);
-	      });
-	    }
-	  }, {
-	    key: 'changeMessageInputValue',
-	    value: function changeMessageInputValue(event) {
-	      this.setState({
-	        messageInputValue: event.target.value
-	      });
-	    }
-	  }, {
-	    key: 'submitMessageOnEnterKeyUp',
-	    value: function submitMessageOnEnterKeyUp(event) {
-	      // If Enter key is pressed and released
-	      if (event.keyCode == '13' && event.target.value !== '') {
-	        var _state = this.state;
-	        var messageInputValue = _state.messageInputValue;
-	        var usernameInputValue = _state.usernameInputValue;
-	
-	
-	        var messageObject = {
-	          author: usernameInputValue || 'Anonymous',
-	          content: messageInputValue,
-	          timestamp: Date.now()
-	        };
-	
-	        this.addMessageToMessageList(messageObject);
-	        this.postMessageToServer(messageObject);
-	
-	        this.setState({
-	          messageInputValue: ''
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'changeUsernameInputValue',
-	    value: function changeUsernameInputValue(event) {
-	      this.setState({
-	        usernameInputValue: event.target.value
-	      });
-	    }
-	  }, {
-	    key: 'addMessageToMessageList',
-	    value: function addMessageToMessageList(messageObject) {
-	      var messageArray = this.state.messageArray;
-	
-	      messageArray.push(messageObject);
-	      this.setState({ messageArray: messageArray });
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(_Header2.default, null),
-	        _react2.default.createElement(
-	          'div',
-	          { id: 'main-content' },
-	          _react2.default.createElement(_Sidebar2.default, {
-	            usernameInputValue: this.state.usernameInputValue,
-	            changeUsernameInputValue: this.changeUsernameInputValue
-	          }),
-	          _react2.default.createElement(
-	            'div',
-	            { id: 'message-list-container', ref: 'messageList' },
-	            _react2.default.createElement(_MessageList2.default, { messageArray: this.state.messageArray })
-	          ),
-	          _react2.default.createElement(_Footer2.default, {
-	            messageInputValue: this.state.messageInputValue,
-	            changeMessageInputValue: this.changeMessageInputValue,
-	            submitMessageOnEnterKeyUp: this.submitMessageOnEnterKeyUp
-	          })
-	        )
-	      );
-	    }
-	  }]);
-	
-	  return App;
-	}(_react2.default.Component);
-	
-	exports.default = App;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
-
-/***/ },
+/* 172 */,
 /* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -22368,6 +22150,225 @@
 	};
 	
 	exports.default = UsernameInput;
+
+/***/ },
+/* 182 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	__webpack_require__(173);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Header = __webpack_require__(175);
+	
+	var _Header2 = _interopRequireDefault(_Header);
+	
+	var _Footer = __webpack_require__(176);
+	
+	var _Footer2 = _interopRequireDefault(_Footer);
+	
+	var _Sidebar = __webpack_require__(178);
+	
+	var _Sidebar2 = _interopRequireDefault(_Sidebar);
+	
+	var _MessageList = __webpack_require__(179);
+	
+	var _MessageList2 = _interopRequireDefault(_MessageList);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // Testing workaround for window object and relative url path
+	
+	
+	var amTesting = process.env.NODE_ENV === 'test';
+	var apiUrl = amTesting ? 'http://localhost:3005' : '';
+	
+	var socket = !amTesting ? window.io() : { on: function on() {
+	    return null;
+	  }, emit: function emit() {
+	    return null;
+	  } };
+	
+	// Components:
+	
+	var App = function (_React$Component) {
+	  _inherits(App, _React$Component);
+	
+	  function App(props) {
+	    _classCallCheck(this, App);
+	
+	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
+	
+	    _this.state = {
+	      messageInputValue: '',
+	      messageArray: [],
+	      usernameInputValue: ''
+	    };
+	
+	    _this.changeMessageInputValue = _this.changeMessageInputValue.bind(_this);
+	    _this.submitMessageOnEnterKeyUp = _this.submitMessageOnEnterKeyUp.bind(_this);
+	    _this.changeUsernameInputValue = _this.changeUsernameInputValue.bind(_this);
+	    _this.postMessageToServer = _this.postMessageToServer.bind(_this);
+	    _this.addMessageToMessageList = _this.addMessageToMessageList.bind(_this);
+	    _this.getAllMessages = _this.getAllMessages.bind(_this);
+	    return _this;
+	  }
+	
+	  _createClass(App, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.getAllMessages();
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+	
+	      //open socket 'on' listeners
+	      socket.on('broadcast:message', function (message) {
+	        _this2.addMessageToMessageList(message);
+	      });
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate() {
+	      // Auto-focus message-list div to latest messages
+	      var messageList = this.refs.messageList;
+	      messageList.scrollTop = messageList.scrollHeight;
+	    }
+	
+	    // Asynchronous functions:
+	
+	  }, {
+	    key: 'getAllMessages',
+	    value: function getAllMessages() {
+	      var _this3 = this;
+	
+	      fetch(apiUrl + '/api/v1/messages').then(function (res) {
+	        return res.json();
+	      }).then(function (responseObj) {
+	        return responseObj.body.messages;
+	      }).then(function (messageArray) {
+	        // messageArray is NOT indexed by timestamp, so we must sort accordingly.
+	        messageArray = messageArray.sort(function (m1, m2) {
+	          return m1.timestamp - m2.timestamp;
+	        });
+	
+	        _this3.setState({
+	          messageArray: messageArray
+	        });
+	      }).catch(function (err) {
+	        return console.error('Error fetching messages: ', err);
+	      });
+	    }
+	  }, {
+	    key: 'postMessageToServer',
+	    value: function postMessageToServer(messageObject) {
+	      socket.emit('send:message', messageObject);
+	
+	      fetch(apiUrl + '/api/v1/messages', {
+	        method: 'POST',
+	        body: JSON.stringify({
+	          messageObject: messageObject
+	        })
+	      }).catch(function (err) {
+	        return console.error(err);
+	      });
+	    }
+	  }, {
+	    key: 'changeMessageInputValue',
+	    value: function changeMessageInputValue(event) {
+	      this.setState({
+	        messageInputValue: event.target.value
+	      });
+	    }
+	  }, {
+	    key: 'submitMessageOnEnterKeyUp',
+	    value: function submitMessageOnEnterKeyUp(event) {
+	      // If Enter key is pressed and released
+	      if (event.keyCode == '13' && event.target.value !== '') {
+	        var _state = this.state;
+	        var messageInputValue = _state.messageInputValue;
+	        var usernameInputValue = _state.usernameInputValue;
+	
+	
+	        var messageObject = {
+	          author: usernameInputValue || 'Anonymous',
+	          content: messageInputValue,
+	          timestamp: Date.now()
+	        };
+	
+	        this.addMessageToMessageList(messageObject);
+	        this.postMessageToServer(messageObject);
+	
+	        this.setState({
+	          messageInputValue: ''
+	        });
+	      }
+	    }
+	  }, {
+	    key: 'changeUsernameInputValue',
+	    value: function changeUsernameInputValue(event) {
+	      this.setState({
+	        usernameInputValue: event.target.value
+	      });
+	    }
+	  }, {
+	    key: 'addMessageToMessageList',
+	    value: function addMessageToMessageList(messageObject) {
+	      var messageArray = this.state.messageArray;
+	
+	      messageArray.push(messageObject);
+	      this.setState({ messageArray: messageArray });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(_Header2.default, null),
+	        _react2.default.createElement(
+	          'div',
+	          { id: 'main-content' },
+	          _react2.default.createElement(_Sidebar2.default, {
+	            usernameInputValue: this.state.usernameInputValue,
+	            changeUsernameInputValue: this.changeUsernameInputValue
+	          }),
+	          _react2.default.createElement(
+	            'div',
+	            { id: 'message-list-container', ref: 'messageList' },
+	            _react2.default.createElement(_MessageList2.default, { messageArray: this.state.messageArray })
+	          ),
+	          _react2.default.createElement(_Footer2.default, {
+	            messageInputValue: this.state.messageInputValue,
+	            changeMessageInputValue: this.changeMessageInputValue,
+	            submitMessageOnEnterKeyUp: this.submitMessageOnEnterKeyUp
+	          })
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return App;
+	}(_react2.default.Component);
+	
+	exports.default = App;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }
 /******/ ]);

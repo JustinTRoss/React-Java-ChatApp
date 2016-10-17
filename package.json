@@ -15,7 +15,9 @@
   "license": "ISC",
   "dependencies": {
     "chai": "^3.5.0",
+    "enzyme": "^2.4.1",
     "es6-promise": "^4.0.5",
+    "express": "^4.14.0",
     "isomorphic-fetch": "^2.2.1",
     "jsdom-global": "^2.1.0",
     "mocha": "^3.0.2",
@@ -25,8 +27,8 @@
     "react-bootstrap": "^0.30.2",
     "react-dom": "^15.3.0",
     "react-tap-event-plugin": "^1.0.0",
-    "enzyme": "^2.4.1",
-    "sinon": "^1.17.6"
+    "sinon": "^1.17.6",
+    "socket.io": "^1.5.0"
   },
   "devDependencies": {
     "babel-core": "^6.13.2",
@@ -42,7 +44,6 @@
     "eslint-plugin-import": "1.12.0",
     "eslint-plugin-jsx-a11y": "^2.0.1",
     "eslint-plugin-react": "6.0.0",
-    "nock": "^8.0.0",
     "webpack": "^1.13.1"
   }
 }

@@ -1,5 +1,6 @@
 package tinyChat;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,6 +12,7 @@ import lombok.Data;
 public class Message {
 	private @Id @GeneratedValue Long id;
 	private String author;
+	@Column(columnDefinition = "TEXT")
 	private String content;
 	private Long timestamp;
 

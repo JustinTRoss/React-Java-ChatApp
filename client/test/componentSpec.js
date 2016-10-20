@@ -13,33 +13,61 @@ import MessageListEntry from '../js/components/MessageListEntry';
 import Footer from '../js/components/Footer';
 import MessageInput from '../js/components/MessageInput';
 
+const targetUri = 'http://localhost:8080';
 const seedGetResponseJSON = {
-  "body": {
+  "_embedded": {
     "messages": [
       {
-        "id": 1,
         "author": "Jane",
         "timestamp": 1421953410956,
-        "content": "Hello!"
+        "content": "Hello!",
+        "_links" : {
+          "self" : {
+            "href" : "http://www.localhost:8080/api/messages/1"
+          },
+          "message" : {
+            "href" : "http://www.localhost:8080/api/messages/1"
+          }
+        }
       },
       {
-        "id": 2,
         "author": "Sam",
         "timestamp": 1421953434028,
         "content": "How are you?",
-        "last_edited": 1421953454124
+        "_links" : {
+          "self" : {
+            "href" : "http://www.localhost:8080/api/messages/2"
+          },
+          "message" : {
+            "href" : "http://www.localhost:8080/api/messages/2"
+          }
+        }
       },
       {
-        "id": 3,
         "author": "Jane",
         "timestamp": 1421953433276,
-        "content": "I'm in SAT!"
+        "content": "I'm in SAT!",
+        "_links" : {
+          "self" : {
+            "href" : "http://www.localhost:8080/api/messages/3"
+          },
+          "message" : {
+            "href" : "http://www.localhost:8080/api/messages/3"
+          }
+        }
       },
       {
-        "id": 4,
         "author": "Jane",
         "timestamp": 1421953454129,
-        "content": "Flight is delayed. :P San Antonio TSA was the friendliest I've ever encountered, though. And I have a hamburger, a beer, and decent wifi."
+        "content": "Flight is delayed. :P San Antonio TSA was the friendliest I've ever encountered, though. And I have a hamburger, a beer, and decent wifi.",
+        "_links" : {
+          "self" : {
+            "href" : "http://www.localhost:8080/api/messages/4"
+          },
+          "message" : {
+            "href" : "http://www.localhost:8080/api/messages/4"
+          }
+        }
       }
     ]
   }
@@ -50,9 +78,9 @@ describe('TinyChat Application Components:', () => {
     const renderer = TestUtils.createRenderer();
     describe('App Component:', () => {
       before(() => {
-        nock('http://localhost:3005')
+        nock(targetUri)
           .persist()
-          .get('/api/v1/messages')
+          .get('/api/messages')
           .reply(200, seedGetResponseJSON);
         renderer.render(<App />);
       });
@@ -117,7 +145,7 @@ describe('TinyChat Application Components:', () => {
     });
 
     describe('MessageList Component:', () => {
-      const messages = seedGetResponseJSON.body.messages;
+      const messages = seedGetResponseJSON._embedded.messages;
       const numberOfMessages = messages.length;
 
       beforeEach(() => {

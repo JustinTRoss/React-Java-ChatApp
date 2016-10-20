@@ -1,7 +1,7 @@
 // Testing workaround for window object and relative url path
 import 'isomorphic-fetch';
 const amTesting = process.env.NODE_ENV === 'test';
-const apiUrl = amTesting ? 'http://localhost:3005' : '';
+const apiUrl = amTesting ? 'http://localhost:8080' : '';
 
 import React from 'react';
 const socket = !amTesting ? window.io('http://localhost:3005') : { on : () => null, emit: () => null, };
@@ -51,7 +51,6 @@ class App extends React.Component {
     fetch(`${apiUrl}/api/messages`)
       .then(res => res.json())
       .then(responseObj => {
-        console.log(responseObj);
         return responseObj._embedded.messages;
       })
       .then(messageArray => {
@@ -79,16 +78,18 @@ class App extends React.Component {
   }
 
   changeMessageInputValue(event) {
-    this.setState({
-      messageInputValue: event.target.value,
-    });
+    const messageInputValue = event.target.value;
+    if(messageInputValue.length <= 2000) {
+      this.setState({
+        messageInputValue,
+      });
+    }
   }
 
   submitMessageOnEnterKeyUp(event) {
     // If Enter key is pressed and released
     if (event.keyCode == '13' && event.target.value !== '') {
       const { messageInputValue, usernameInputValue } = this.state;
-
       const messageObject = {
         author: usernameInputValue || 'Anonymous',
         content: messageInputValue,
@@ -105,9 +106,12 @@ class App extends React.Component {
   }
 
   changeUsernameInputValue(event) {
-    this.setState({
-      usernameInputValue: event.target.value,
-    });
+    const usernameInputValue = event.target.value;
+    if (usernameInputValue.length <= 30) {
+      this.setState({
+        usernameInputValue,
+      });
+    }
   }
 
 

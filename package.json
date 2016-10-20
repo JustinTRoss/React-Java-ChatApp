@@ -1,14 +1,14 @@
 {
   "name": "tinychat",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "export NODE_ENV='test' && mocha --compilers js:babel-register --recursive && unset NODE_ENV",
+    "test": "cd client && export NODE_ENV='test' && mocha --compilers js:babel-register --recursive && unset NODE_ENV",
     "start:sockets": "node backend/SocketService/socketService.js",
     "start:client": "open -a \"Google Chrome\" \"http://localhost:8080\"",
     "start:apiServer": "cd ./backend/RESTService/ && ./gradlew bootRun",
-    "start:socketsInNewTab": "osascript -e 'tell application \"Terminal\" to activate' -e 'tell application \"System Events\" to tell process \"Terminal\" to keystroke \"t\" using command down' -e 'tell application \"Terminal\" to do script \"npm run start:sockets\" in selected tab of the front window'" ,
+    "start:socketsInNewTab": "osascript -e 'tell application \"Terminal\" to activate' -e 'tell application \"System Events\" to tell process \"Terminal\" to keystroke \"t\" using command down' -e 'tell application \"Terminal\" to do script \"npm run start:sockets\" in selected tab of the front window'",
     "start": "cd client && webpack && cd .. && npm run start:socketsInNewTab && npm run start:apiServer",
     "test:watch": "npm test -- --watch"
   },
@@ -20,6 +20,7 @@
     "enzyme": "^2.4.1",
     "es6-promise": "^4.0.5",
     "isomorphic-fetch": "^2.2.1",
+    "jsdom": "^9.8.0",
     "jsdom-global": "^2.1.0",
     "mocha": "^3.0.2",
     "nock": "^8.1.0",

@@ -21471,7 +21471,7 @@
 	
 	
 	var amTesting = process.env.NODE_ENV === 'test';
-	var apiUrl = amTesting ? 'http://localhost:3005' : '';
+	var apiUrl = amTesting ? 'http://localhost:8080' : '';
 	
 	var socket = !amTesting ? window.io('http://localhost:3005') : { on: function on() {
 	    return null;
@@ -21537,7 +21537,6 @@
 	      fetch(apiUrl + '/api/messages').then(function (res) {
 	        return res.json();
 	      }).then(function (responseObj) {
-	        console.log(responseObj);
 	        return responseObj._embedded.messages;
 	      }).then(function (messageArray) {
 	        // messageArray is NOT indexed by timestamp, so we must sort accordingly.
@@ -21570,9 +21569,12 @@
 	  }, {
 	    key: 'changeMessageInputValue',
 	    value: function changeMessageInputValue(event) {
-	      this.setState({
-	        messageInputValue: event.target.value
-	      });
+	      var messageInputValue = event.target.value;
+	      if (messageInputValue.length <= 2000) {
+	        this.setState({
+	          messageInputValue: messageInputValue
+	        });
+	      }
 	    }
 	  }, {
 	    key: 'submitMessageOnEnterKeyUp',
@@ -21582,7 +21584,6 @@
 	        var _state = this.state;
 	        var messageInputValue = _state.messageInputValue;
 	        var usernameInputValue = _state.usernameInputValue;
-	
 	
 	        var messageObject = {
 	          author: usernameInputValue || 'Anonymous',
@@ -21601,9 +21602,12 @@
 	  }, {
 	    key: 'changeUsernameInputValue',
 	    value: function changeUsernameInputValue(event) {
-	      this.setState({
-	        usernameInputValue: event.target.value
-	      });
+	      var usernameInputValue = event.target.value;
+	      if (usernameInputValue.length <= 30) {
+	        this.setState({
+	          usernameInputValue: usernameInputValue
+	        });
+	      }
 	    }
 	  }, {
 	    key: 'addMessageToMessageList',

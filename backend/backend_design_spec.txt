@@ -1,0 +1,77 @@
+There are three websocket events interacting with the backend and two http calls. The websockets are handled through Socket.io, and the http calls send JSON and expect JSON in return.
+
+Socket Service:
+Directory: /backend/SocketService/socketService.js
+
+Socket.io library is used for realtime message updates. The documentation for this library can be found at socket.io and includes guidance for backend development with socket.io events and triggers. 
+
+	- 'connection'
+		triggered by: client
+		trigger: triggers each time a new client connection is made
+		digested by: server
+		function: notifies the server of a new socket connection and can be used to initilize event listeners 
+
+	- 'send:message'
+		triggered by: client
+		trigger: triggers each time a message is submitted from a client 
+		digested by: server
+		function: triggers broadcast of a 'broadcast:message' event trigger to all sockets (clients) other than the sender  
+
+	- 'broadcast:message'
+		triggered by: server
+		trigger: triggers each time a 'send:message' event is digested by the server
+		digested by: client
+		function: adds a new message to the client
+
+Restful Service:
+Directory: /backend/RESTService
+Endpoints:
+
+	- /api/messages
+		- GET:
+			Description: When page loads, we will use this endpoint to retrieve all existing messages
+			Parameters:
+				Required: none
+				Optional: none 
+			Success payload:
+				response = JSON {
+				  	"_embedded" : {
+					    "messages" : [ {
+							"author" : String,
+							"content" : String,
+							"timestamp" : Date (Long milliseconds),
+							"_links" : {
+						        "self" : {
+						          	"href" :  String
+						        },
+						        "message" : {
+						          	"href" : String
+						        }
+					      	}
+				    	}
+				    }
+
+		- POST:
+			Description: When a user submits a message, it is sent to this endpoint for backend processing. All other existing clients receive this message through websockets.
+			Parameters:
+				Required:
+					Author: string
+					Content: string
+				Optional: none
+			Success payload:
+				response = JSON {
+					"author" : String,
+					"content" : String,
+					"timestamp" : Date (Long milliseconds),
+					"_links" : {
+					    "self" : {
+					      	"href" : String
+					    },
+					    "message" : {
+					      	"href" : String
+					    }
+					}
+				}
+
+
+

@@ -1,0 +1,55 @@
+== README ==
+
+=== What important files live where ===
+
+/backend
+	/backend_design_spec.txt: backend information and design details
+	/RESTService/src/main
+		/java: Java files for API and file services
+		/resources: Static assets to be served
+	/SocketService/socketServer.js: mock server with sockets to use for development
+
+/client
+	/js: JavaScript files and React components
+		/components: react component files
+	/styles: css files
+	/test: component and function test files
+
+/node_modules: dependency libraries and frameworks
+
+
+=== Features implemented beyond basic requirements ===
+
+Frontend:
+- realtime messaging
+- username entry
+- auto scrolling to latest message
+- timestamps
+- validation of message content length
+
+Backend:
+- java spring boot backend (file service and API service)
+- persistent data storage with PostgreSQL
+- read/write capabilities to database
+- socket.io server
+
+
+=== Run instructions ===
+
+To install node dependencies, run:
+$ npm install
+
+To create a PostgreSQL database instance:
+$ createdb -h localhost -p 5432 -U postgres chatAppDB
+
+To bundle frontend code and start the backend (web server and socket server), run:
+$ npm start
+
+To open a chrome client on localhost:8080, run:
+$ npm run start:client
+
+
+=== Test instructions ===
+
+To test the client-side code, run:
+$ npm test

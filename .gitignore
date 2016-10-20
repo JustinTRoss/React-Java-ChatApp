@@ -3,3 +3,4 @@ node_modules
 
 /backend/RESTService/.gradle
 /backend/RESTService/build
+/backend/RESTService/src/main/resources/static/built

@@ -1,5 +1,7 @@
 == README ==
 
+Description: Chat application with React frontend, Node sockets, Java API and file server, and PostgreSQL database.
+
 === What important files live where ===
 
 /backend

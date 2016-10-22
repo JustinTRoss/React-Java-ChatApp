@@ -20,22 +20,6 @@ Description: Chat application with React frontend, Node sockets, Java API and fi
 /node_modules: dependency libraries and frameworks
 
 
-=== Features implemented beyond basic requirements ===
-
-Frontend:
-- realtime messaging
-- username entry
-- auto scrolling to latest message
-- timestamps
-- validation of message content length
-
-Backend:
-- java spring boot backend (file service and API service)
-- persistent data storage with PostgreSQL
-- read/write capabilities to database
-- socket.io server
-
-
 === Run instructions ===
 
 To install node dependencies, run:
